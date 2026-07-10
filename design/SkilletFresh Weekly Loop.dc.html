@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=Atkinson+Hyperlegible:ital,wght@0,400;0,700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#EFEAE0;font-family:'Instrument Sans',system-ui,sans-serif}
+a{color:#3B6A34}a:hover{color:#2E5528}
+.dv-turn{padding:40px 44px 32px;scroll-margin-top:16px}
+.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 6px}
+.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#29241C;color:#fff;border-radius:4px;text-decoration:none}
+.dv-tname{font:600 13px/1.2 'Instrument Sans',system-ui,sans-serif;color:#29241C}
+.dv-intro{max-width:960px;font:12px/1.55 'Instrument Sans',system-ui,sans-serif;color:rgba(41,36,28,.6);margin:0 0 26px}
+.dv-rowlabel{font:600 11px ui-monospace,Menlo,monospace;color:#8A7F6C;margin:34px 0 14px;letter-spacing:.06em}
+.dv-opts{display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start}
+.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px;width:390px}
+.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#29241C;border-radius:5px;text-decoration:none}
+.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 11.5px/1.3 'Instrument Sans',system-ui,sans-serif;color:rgba(41,36,28,.6)}
+.dv-opt:target .dv-oid{background:#CD4E24;color:#fff}
+.dv-note{font:10.5px/1.55 ui-monospace,Menlo,monospace;color:#8A7F6C;padding:0 2px}
+</style>
+</helmet>
+
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">SkilletFresh — core weekly loop · 9 states</span></div>
+<p class="dv-intro">390px mobile web, light mode. Palette: warm off-white base · herb green primary · paprika reserved for logging + progress. Type: Instrument Sans (headings/UI) + Atkinson Hyperlegible (data, list items, recipe steps). Recipe photos are warm-toned placeholders — drop in real photography before testing. Motion cues annotated in mono under each relevant frame.</p>
+
+<!-- ══════════ SUNDAY REVIEW ══════════ -->
+<div class="dv-rowlabel">screen 1 · sunday review</div>
+<div class="dv-opts">
+
+<!-- 1a default -->
+<div class="dv-opt" id="1a">
+<div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Default — plan arrives Sunday 6 PM</div>
+<div style="width:390px;background:#FAF7F1;border:1px solid #E6DCCB;border-radius:28px;overflow:hidden;box-shadow:0 12px 32px rgba(60,45,20,.10)">
+  <div style="height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font:600 13px 'Instrument Sans',sans-serif;color:#29241C"><span>9:41</span><div style="width:22px;height:11px;border:1.5px solid #29241C;border-radius:3.5px;position:relative"><div style="position:absolute;inset:2px;right:6px;background:#29241C;border-radius:1px"></div></div></div>
+  <div style="padding:12px 20px 14px">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <span style="font:700 16px 'Instrument Sans',sans-serif;color:#29241C">Skillet<span style="color:#3B6A34">Fresh</span></span>
+      <span style="width:34px;height:34px;border-radius:999px;white-space:nowrap;background:#EFE7D9;display:flex;align-items:center;justify-content:center;font:600 13px 'Instrument Sans',sans-serif;color:#6F6557">P</span>
+    </div>
+    <h1 style="margin:16px 0 3px;font:700 26px/1.12 'Instrument Sans',sans-serif;color:#29241C">Your week is ready</h1>
+    <div style="font:400 14px 'Instrument Sans',sans-serif;color:#6F6557">Mon Jul 13 – Sun Jul 19</div>
+    <div style="margin-top:12px;background:#ECF2E5;border:1px solid #D4E2C8;border-radius:14px;padding:11px 14px;display:flex;gap:10px;align-items:flex-start">
+      <span style="width:8px;height:8px;border-radius:99px;background:#3B6A34;margin-top:5px;flex:none"></span>
+      <span style="font:400 13.5px/1.45 'Instrument Sans',sans-serif;color:#2E5528">7 dinners planned · all under 30 min · protein on target every day</span>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px;padding:2px 16px 16px">
+    <sc-for list="{{ days }}" as="d" hint-placeholder-count="7">
+    <div style="background:#FFFFFF;border:1px solid #E9E0D2;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:9px">
+      <div style="display:flex;gap:12px">
+        <div style="width:84px;height:84px;border-radius:12px;flex:none;background:linear-gradient(140deg,{{ d.p1 }},{{ d.p2 }});position:relative;overflow:hidden">
+          <div style="position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.12) 0px,rgba(255,255,255,.12) 5px,rgba(255,255,255,0) 5px,rgba(255,255,255,0) 11px)"></div>
+          <span style="position:absolute;left:7px;bottom:5px;font:8px ui-monospace,monospace;color:rgba(255,255,255,.9)">photo</span>
+        </div>
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:5px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font:700 11px 'Instrument Sans',sans-serif;letter-spacing:.07em;color:#8A7F6C">{{ d.day }}</span>
+            <span style="padding:2px 8px;border-radius:999px;white-space:nowrap;background:#ECF2E5;color:#2E5528;font:700 10.5px 'Atkinson Hyperlegible',sans-serif">{{ d.time }} min · under 30 ✓</span>
+          </div>
+          <div style="font:600 16px/1.25 'Instrument Sans',sans-serif;color:#29241C">{{ d.name }}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px">
+            <span style="padding:2.5px 9px;border-radius:999px;white-space:nowrap;background:#ECF2E5;color:#2E5528;font:700 11px 'Atkinson Hyperlegible',sans-serif">Protein · in band</span>
+            <span style="padding:2.5px 9px;border-radius:999px;white-space:nowrap;background:#F3EDE2;color:#6F6557;font:700 11px 'Atkinson Hyperlegible',sans-serif">Carbs · in band</span>
+            <span style="padding:2.5px 9px;border-radius:999px;white-space:nowrap;background:#F3EDE2;color:#6F6557;font:700 11px 'Atkinson Hyperlegible',sans-serif">≈{{ d.cal }} cal</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:9px;border-top:1px solid #F1EADD;padding-top:9px">
+        <span style="flex:none;padding:2px 9px;border-radius:999px;white-space:nowrap;border:1.5px solid #D4E2C8;background:#FFFFFF;color:#2E5528;font:700 12px 'Atkinson Hyperlegible',sans-serif">{{ d.fit }}/10</span>
+        <span style="flex:1;font:400 12.5px/1.35 'Instrument Sans',sans-serif;color:#6F6557">{{ d.reason }}</span>
+        <button style="flex:none;padding:11px 16px;border:1.5px solid #E0D6C4;border-radius:12px;background:#FFFFFF;font:600 13px 'Instrument Sans',sans-serif;color:#29241C;cursor:pointer">Swap</button>
+      </div>
+    </div>
+    </sc-for>
+  </div>
+  <div style="position:sticky;bottom:0;background:rgba(250,247,241,.97);border-top:1px solid #E9E0D2;padding:12px 16px 20px;display:flex;align-items:center;gap:14px">
+    <div style="flex:none">
+      <div style="font:400 11px 'Instrument Sans',sans-serif;color:#8A7F6C">Est. groceries</div>
+      <div style="font:600 15px 'Atkinson Hyperlegible',sans-serif;color:#29241C">$87</div>
+    </div>
+    <button style="flex:1;height:52px;border:none;border-radius:14px;background:#3B6A34;color:#FDFBF7;font:600 16px 'Instrument Sans',sans-serif;cursor:pointer;box-shadow:0 4px 12px rgba(59,106,52,.25)">Lock plan &amp; build list</button>
+  </div>
+</div>
+<sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}"><div class="dv-note">screen scrolls; bottom bar is sticky. cost is passive info — never styled as a warning. accepting a day = doing nothing.</div></sc-if>
+</div>
+
+<!-- 1b swap sheet -->
+<div class="dv-opt" id="1b">
+<div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Swap sheet — Thursday, 3 alternates only</div>
+<div style="width:390px;height:844px;background:#FAF7F1;border:1px solid #E6DCCB;border-radius:28px;overflow:hidden;position:relative;box-shadow:0 12px 32px rgba(60,45,20,.10)">
+  <div style="height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font:600 13px 'Instrument Sans',sans-serif;color:#29241C"><span>9:41</span><div style="width:22px;height:11px;border:1.5px solid #29241C;border-radius:3.5px;position:relative"><div style="position:absolute;inset:2px;right:6px;background:#29241C;border-radius:1px"></div></div></div>
+  <div style="padding:12px 20px 10px">
+    <h1 style="margin:0 0 3px;font:700 26px/1.12 'Instrument Sans',sans-serif;color:#29241C">Your week is ready</h1>
+    <div style="font:400 14px 'Instrument Sans',sans-serif;color:#6F6557">Mon Jul 13 – Sun Jul 19</div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px;padding:2px 16px">
+    <sc-for list="{{ daysShort }}" as="d" hint-placeholder-count="3">
+    <div style="background:#FFFFFF;border:1px solid #E9E0D2;border-radius:16px;padding:12px;display:flex;gap:12px">
+      <div style="width:64px;height:64px;border-radius:11px;flex:none;background:linear-gradient(140deg,{{ d.p1 }},{{ d.p2 }})"></div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+        <span style="font:700 11px 'Instrument Sans',sans-serif;letter-spacing:.07em;color:#8A7F6C">{{ d.day }}</span>
+        <div style="font:600 15px/1.25 'Instrument Sans',sans-serif;color:#29241C">{{ d.name }}</div>
+        <span style="align-self:flex-start;padding:2px 8px;border-radius:999px;white-space:nowrap;background:#ECF2E5;color:#2E5528;font:700 10.5px 'Atkinson Hyperlegible',sans-serif">{{ d.time }} min · under 30 ✓</span>
+      </div>
+    </div>
+    </sc-for>
+  </div>
+  <div style="position:absolute;inset:0;background:rgba(41,36,28,.42)"></div>
+  <div style="position:absolute;left:0;right:0;bottom:0;background:#FAF7F1;border-radius:24px 24px 0 0;padding:10px 16px 22px;box-shadow:0 -12px 40px rgba(41,36,28,.25)">
+    <div style="width:40px;height:4.5px;border-radius:99px;background:#D8CFC0;margin:0 auto 14px"></div>
+    <div style="font:700 19px 'Instrument Sans',sans-serif;color:#29241C;margin-bottom:2px">Swap Thursday&rsquo;s dinner</div>
+    <div style="font:400 13px 'Instrument Sans',sans-serif;color:#6F6557;margin-bottom:14px">3 alternates, ranked for the rest of your week. Tap one to replace.</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <sc-for list="{{ alternates }}" as="a" hint-placeholder-count="3">
+      <div style="background:#FFFFFF;border:1.5px solid #E9E0D2;border-radius:16px;padding:12px;display:flex;gap:12px;align-items:center;cursor:pointer" style-hover="border-color:#3B6A34">
+        <div style="width:66px;height:66px;border-radius:11px;flex:none;background:linear-gradient(140deg,{{ a.p1 }},{{ a.p2 }});position:relative;overflow:hidden">
+          <div style="position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.12) 0px,rgba(255,255,255,.12) 5px,rgba(255,255,255,0) 5px,rgba(255,255,255,0) 11px)"></div>
+        </div>
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="padding:1.5px 8px;border-radius:999px;white-space:nowrap;border:1.5px solid #D4E2C8;color:#2E5528;font:700 11.5px 'Atkinson Hyperlegible',sans-serif">{{ a.fit }}/10</span>
+            <span style="padding:2px 8px;border-radius:999px;white-space:nowrap;background:#ECF2E5;color:#2E5528;font:700 10.5px 'Atkinson Hyperlegible',sans-serif">{{ a.time }} min ✓</span>
+          </div>
+          <div style="font:600 15px/1.2 'Instrument Sans',sans-serif;color:#29241C">{{ a.name }}</div>
+          <div style="font:400 12px/1.35 'Instrument Sans',sans-serif;color:#6F6557">{{ a.reason }}</div>
+        </div>
+        <span style="flex:none;font:400 22px 'Instrument Sans',sans-serif;color:#C9BCA4">›</span>
+      </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+<sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}"><div class="dv-note">motion: sheet slides up 320ms cubic-bezier(.2,.9,.3,1) over a fading scrim. one tap replaces the meal — chosen card pulses once, sheet drops, the day card cross-fades to the new dinner. no search, no browsing.</div></sc-if>
+</div>
+
+<!-- 1c locked -->
+<div class="dv-opt" id="1c">
+<div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Locked — read-only, CTA becomes shopping list</div>
+<div style="width:390px;background:#FAF7F1;border:1px solid #E6DCCB;border-radius:28px;overflow:hidden;box-shadow:0 12px 32px rgba(60,45,20,.10)">
+  <div style="height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font:600 13px 'Instrument Sans',sans-serif;color:#29241C"><span>9:41</span><div style="width:22px;height:11px;border:1.5px solid #29241C;border-radius:3.5px;position:relative"><div style="position:absolute;inset:2px;right:6px;background:#29241C;border-radius:1px"></div></div></div>
+  <div style="padding:12px 20px 14px">
+    <div style="display:flex;align-items:center;gap:8px">
+      <h1 style="margin:0;font:700 26px/1.12 'Instrument Sans',sans-serif;color:#29241C;flex:1">This week&rsquo;s plan</h1>
+      <span style="display:flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;white-space:nowrap;background:#3B6A34;color:#FDFBF7;font:600 11.5px 'Instrument Sans',sans-serif"><span style="width:7px;height:7px;border-radius:99px;background:#FDFBF7;opacity:.85"></span>Locked</span>
+    </div>
+    <div style="font:400 14px 'Instrument Sans',sans-serif;color:#6F6557;margin-top:3px">Mon Jul 13 – Sun Jul 19 · read-only</div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px;padding:2px 16px 16px">
+    <sc-for list="{{ days }}" as="d" hint-placeholder-count="7">
+    <div style="background:#FFFFFF;border:1px solid #EDE5D8;border-radius:16px;padding:12px;display:flex;gap:12px">
+      <div style="width:72px;height:72px;border-radius:11px;flex:none;background:linear-gradient(140deg,{{ d.p1 }},{{ d.p2 }});position:relative;overflow:hidden">
+        <div style="position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.12) 0px,rgba(255,255,255,.12) 5px,rgba(255,255,255,0) 5px,rgba(255,255,255,0) 11px)"></div>
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font:700 11px 'Instrument Sans',sans-serif;letter-spacing:.07em;color:#8A7F6C">{{ d.day }}</span>
+          <span style="padding:2px 8px;border-radius:999px;white-space:nowrap;background:#ECF2E5;color:#2E5528;font:700 10.5px 'Atkinson Hyperlegible',sans-serif">{{ d.time }} min ✓</span>
+        </div>
+        <div style="font:600 15px/1.25 'Instrument Sans',sans-serif;color:#29241C">{{ d.name }}</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
+          <span style="padding:2px 8px;border-radius:999px;white-space:nowrap;background:#ECF2E5;color:#2E5528;font:700 10.5px 'Atkinson Hyperlegible',sans-serif">Protein · in band</span>
+          <span style="padding:2px 8px;border-radius:999px;white-space:nowrap;background:#F3EDE2;color:#6F6557;font:700 10.5px 'Atkinson Hyperlegible',sans-serif">≈{{ d.cal }} cal</span>
+        </div>
+      </div>
+    </div>
+    </sc-for>
+  </div>
+  <div style="position:sticky;bottom:0;background:rgba(250,247,241,.97);border-top:1px solid #E9E0D2;padding:12px 16px 20px;display:flex;align-items:center;gap:14px">
+    <div style="flex:none">
+      <div style="font:400 11px 'Instrument Sans',sans-serif;color:#8A7F6C">Est. groceries</div>
+      <div style="font:600 15px 'Atkinson Hyperlegible',sans-serif;color:#29241C">$87</div>
+    </div>
+    <button style="flex:1;height:52px;border:none;border-radius:14px;background:#3B6A34;color:#FDFBF7;font:600 16px 'Instrument Sans',sans-serif;cursor:pointer;box-shadow:0 4px 12px rgba(59,106,52,.25)">View shopping list</button>
+  </div>
+</div>
+<sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}"><div class="dv-note">swap buttons gone, cards compact — the decision phase is over. plan can be unlocked from settings (out of scope here).</div></sc-if>
+</div>
+</div>
+
+<!-- ══════════ SHOPPING LIST ══════════ -->
+<div class="dv-rowlabel">screen 2 · shopping list</div>
+<div class="dv-opts">
+
+<!-- 1d in progress -->
+<div class="dv-opt" id="1d">
+<div class="dv-olabel"><a class="dv-oid" href="#1d">1d</a>In progress — standing in the store</div>
+<div style="width:390px;background:#FAF7F1;border:1px solid #E6DCCB;border-radius:28px;overflow:hidden;box-shadow:0 12px 32px rgba(60,45,20,.10)">
+  <div style="height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font:600 13px 'Instrument Sans',sans-serif;color:#29241C"><span>9:41</span><div style="width:22px;height:11px;border:1.5px solid #29241C;border-radius:3.5px;position:relative"><div style="position:absolute;inset:2px;right:6px;background:#29241C;border-radius:1px"></div></div></div>
+  <div style="padding:12px 20px 6px">
+    <div style="display:flex;align-items:baseline;justify-content:space-between">
+      <h1 style="margin:0;font:700 24px/1.15 'Instrument Sans',sans-serif;color:#29241C">Shopping list</h1>
+      <span style="font:400 13px 'Atkinson Hyperlegible',sans-serif;color:#8A7F6C">Est. $87</span>
+    </div>
+    <div style="font:400 13.5px 'Instrument Sans',sans-serif;color:#6F6557;margin-top:2px">One trip · covers all 7 dinners</div>
+    <div style="margin-top:14px;display:flex;align-items:center;gap:10px">
+      <div style="flex:1;height:6px;border-radius:99px;background:#EBE2D2;overflow:hidden"><div style="width:20%;height:100%;border-radius:99px;background:#3B6A34"></div></div>
+      <span style="font:700 12.5px 'Atkinson Hyperlegible',sans-serif;color:#2E5528;flex:none">20 items left</span>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px;padding:12px 16px 20px">
+    <sc-for list="{{ openGroups }}" as="g" hint-placeholder-count="2">
+    <div style="background:#FFFFFF;border:1px solid #E9E0D2;border-radius:16px;padding:6px 16px 8px">
+      <div style="display:flex;align-items:center;gap:8px;min-height:46px;cursor:pointer">
+        <span style="flex:1;font:600 15px 'Instrument Sans',sans-serif;color:#29241C">{{ g.name }}</span>
+        <span style="padding:1.5px 9px;border-radius:999px;white-space:nowrap;background:#F3EDE2;color:#6F6557;font:700 11.5px 'Atkinson Hyperlegible',sans-serif">{{ g.left }} left</span>
+        <span style="font:400 14px 'Instrument Sans',sans-serif;color:#C9BCA4">⌃</span>
+      </div>
+      <sc-for list="{{ g.rows }}" as="it" hint-placeholder-count="5">
+      <div style="display:flex;align-items:center;gap:14px;min-height:52px;border-top:1px solid #F4EEE2;cursor:pointer">
+        <div style="width:28px;height:28px;border-radius:9px;flex:none;border:2px solid {{ it.boxBorder }};background:{{ it.boxBg }};display:flex;align-items:center;justify-content:center;color:#FFFFFF;font:700 16px 'Instrument Sans',sans-serif;box-sizing:border-box">{{ it.check }}</div>
+        <div style="flex:1;font:400 16px 'Atkinson Hyperlegible',sans-serif;color:{{ it.color }};text-decoration:{{ it.tdec }}">{{ it.name }} <span style="color:#9A907F">— {{ it.qty }}</span></div>
+      </div>
+      </sc-for>
+    </div>
+    </sc-for>
+    <sc-for list="{{ closedGroups }}" as="g" hint-placeholder-count="3">
+    <div style="background:#FFFFFF;border:1px solid #E9E0D2;border-radius:16px;padding:0 16px;display:flex;align-items:center;gap:8px;min-height:56px;cursor:pointer">
+      <span style="flex:1;font:600 15px 'Instrument Sans',sans-serif;color:#29241C">{{ g.name }}</span>
+      <span style="padding:1.5px 9px;border-radius:999px;white-space:nowrap;background:#F3EDE2;color:#6F6557;font:700 11.5px 'Atkinson Hyperlegible',sans-serif">{{ g.count }} items</span>
+      <span style="font:400 14px 'Instrument Sans',sans-serif;color:#C9BCA4">⌄</span>
+    </div>
+    </sc-for>
+  </div>
+</div>
+<sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}"><div class="dv-note">quantities already merged across the household&rsquo;s 3 profiles — one trip, no per-person breakdown. motion: a checked row squishes closed (180ms) and re-enters at the bottom of its group, struck through; the progress bar eases along. 28px checkbox inside a 52px tap row — wet-hands friendly.</div></sc-if>
+</div>
+
+<!-- 1e complete -->
+<div class="dv-opt" id="1e">
+<div class="dv-olabel"><a class="dv-oid" href="#1e">1e</a>Complete — gentle receipt prompt, skippable</div>
+<div style="width:390px;background:#FAF7F1;border:1px solid #E6DCCB;border-radius:28px;overflow:hidden;box-shadow:0 12px 32px rgba(60,45,20,.10)">
+  <div style="height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font:600 13px 'Instrument Sans',sans-serif;color:#29241C"><span>9:41</span><div style="width:22px;height:11px;border:1.5px solid #29241C;border-radius:3.5px;position:relative"><div style="position:absolute;inset:2px;right:6px;background:#29241C;border-radius:1px"></div></div></div>
+  <div style="padding:12px 20px 6px">
+    <div style="display:flex;align-items:baseline;justify-content:space-between">
+      <h1 style="margin:0;font:700 24px/1.15 'Instrument Sans',sans-serif;color:#29241C">Shopping list</h1>
+      <span style="font:400 13px 'Atkinson Hyperlegible',sans-serif;color:#8A7F6C">Est. $87</span>
+    </div>
+    <div style="margin-top:14px;display:flex;align-items:center;gap:10px">
+      <div style="flex:1;height:6px;border-radius:99px;background:#EBE2D2;overflow:hidden"><div style="width:100%;height:100%;border-radius:99px;background:#3B6A34"></div></div>
+      <span style="font:700 12.5px 'Atkinson Hyperlegible',sans-serif;color:#2E5528;flex:none">All 25 in the cart</span>
+    </div>
+  </div>
+  <div style="padding:14px 16px 20px;display:flex;flex-direction:column;gap:10px">
+    <div style="background:#ECF2E5;border:1px solid #D4E2C8;border-radius:18px;padding:20px 18px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+        <div style="width:40px;height:40px;border-radius:999px;white-space:nowrap;background:#3B6A34;color:#FDFBF7;display:flex;align-items:center;justify-content:center;font:700 20px 'Instrument Sans',sans-serif;flex:none">✓</div>
+        <div style="font:700 18px 'Instrument Sans',sans-serif;color:#2E5528">That&rsquo;s the whole trip</div>
+      </div>
+      <div style="font:400 13.5px/1.5 'Instrument Sans',sans-serif;color:#4C6244;margin:0 0 16px 52px">Every dinner this week is now covered.</div>
+      <div style="background:#FFFFFF;border:1px solid #D4E2C8;border-radius:14px;padding:14px">
+        <div style="font:600 14.5px 'Instrument Sans',sans-serif;color:#29241C;margin-bottom:3px">Help SkilletFresh learn prices</div>
+        <div style="font:400 12.5px/1.45 'Instrument Sans',sans-serif;color:#6F6557;margin-bottom:12px">Add your receipt total and next week&rsquo;s estimate gets sharper. Totally optional.</div>
+        <div style="display:flex;align-items:center;border:1.5px solid #E0D6C4;border-radius:12px;padding:0 14px;height:50px;background:#FDFBF7;margin-bottom:12px">
+          <span style="font:400 17px 'Atkinson Hyperlegible',sans-serif;color:#29241C;margin-right:6px">$</span>
+          <span style="font:400 17px 'Atkinson Hyperlegible',sans-serif;color:#B4A88F">Receipt total</span>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button style="flex:1;height:46px;border:1.5px solid #E0D6C4;border-radius:12px;background:#FFFFFF;font:600 14px 'Instrument Sans',sans-serif;color:#6F6557;cursor:pointer">Skip</button>
+          <button style="flex:1.4;height:46px;border:none;border-radius:12px;background:#3B6A34;color:#FDFBF7;font:600 14px 'Instrument Sans',sans-serif;cursor:pointer">Save total</button>
+        </div>
+      </div>
+    </div>
+    <sc-for list="{{ doneGroups }}" as="g" hint-placeholder-count="5">
+    <div style="background:#FFFFFF;border:1px solid #EDE5D8;border-radius:16px;padding:0 16px;display:flex;align-items:center;gap:8px;min-height:52px;opacity:.75">
+      <span style="width:22px;height:22px;border-radius:7px;background:#3B6A34;color:#fff;display:flex;align-items:center;justify-content:center;font:700 12px 'Instrument Sans',sans-serif;flex:none">✓</span>
+      <span style="flex:1;font:600 14.5px 'Instrument Sans',sans-serif;color:#6F6557;text-decoration:line-through">{{ g.name }}</span>
+      <span style="font:700 11.5px 'Atkinson Hyperlegible',sans-serif;color:#9A907F">{{ g.count }} of {{ g.count }}</span>
+    </div>
+    </sc-for>
+  </div>
+</div>
+<sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}"><div class="dv-note">framed as &ldquo;learning prices&rdquo;, never budget tracking — no comparison against the estimate, no red, skippable in one tap.</div></sc-if>
+</div>
+</div>
+
+<!-- ══════════ TODAY VIEW ══════════ -->
+<div class="dv-rowlabel">screen 3 · today view — the daily home</div>
+<div class="dv-opts">
+
+<!-- 1f default -->
+<div class="dv-opt" id="1f">
+<div class="dv-olabel"><a class="dv-oid" href="#1f">1f</a>Default — Wednesday evening, pre-log</div>
+<div style="width:390px;height:844px;background:#FAF7F1;border:1px solid #E6DCCB;border-radius:28px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 12px 32px rgba(60,45,20,.10)">
+  <div style="height:40px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font:600 13px 'Instrument Sans',sans-serif;color:#29241C"><span>9:41</span><div style="width:22px;height:11px;border:1.5px solid #29241C;border-radius:3.5px;position:relative"><div style="position:absolute;inset:2px;right:6px;background:#29241C;border-radius:1px"></div></div></div>
+  <div style="padding:10px 20px 0">
+    <div style="font:400 13px 'Instrument Sans',sans-serif;color:#8A7F6C">Wednesday, July 15</div>
+    <h1 style="margin:2px 0 0;font:700 25px/1.1 'Instrument Sans',sans-serif;color:#29241C">Tonight&rsquo;s dinner</h1>
+    <div style="display:flex;justify-content:space-between;padding:16px 14px 0">
+      <sc-for list="{{ strip }}" as="t" hint-placeholder-count="7">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:24px">
+        <span style="font:700 10px 'Instrument Sans',sans-serif;color:#9A907F">{{ t.l }}</span>
+        <span style="width:{{ t.size }};height:{{ t.size }};border-radius:99px;background:{{ t.bg }};border:{{ t.border }};box-sizing:border-box"></span>
+      </div>
+      </sc-for>
+    </div>
+  </div>
+  <div style="margin:18px 16px 0;background:#FFFFFF;border:1px solid #E9E0D2;border-radius:20px;overflow:hidden;cursor:pointer;box-shadow:0 2px 10px rgba(60,45,20,.05)">
+    <div style="height:182px;background:linear-gradient(150deg,#C8763F,#96491E);position:relative">
+      <div style="position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.10) 0px,rgba(255,255,255,.10) 7px,rgba(255,255,255,0) 7px,rgba(255,255,255,0) 15px)"></div>
+      <span style="position:absolute;left:12px;bottom:9px;font:9px ui-monospace,monospace;color:rgba(255,255,255,.9)">recipe photo — smoky chickpea &amp; spinach skillet</span>
+    </div>
+    <div style="padding:15px 16px 16px">
+      <div style="font:700 20px/1.2 'Instrument Sans',sans-serif;color:#29241C;margin-bottom:9px">Smoky chickpea &amp; spinach skillet</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px">
+        <span style="padding:3px 10px;border-radius:999px;white-space:nowrap;background:#ECF2E5;color:#2E5528;font:700 11.5px 'Atkinson Hyperlegible',sans-serif">30 min · under your ceiling ✓</span>
+        <span style="padding:3px 10px;border-radius:999px;white-space:nowrap;background:#F3EDE2;color:#6F6557;font:700 11.5px 'Atkinson Hyperlegible',sans-serif">Your portion · 1½ servings</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:11px">
+        <span style="padding:3px 10px;border-radius:999px;white-space:nowrap;background:#ECF2E5;color:#2E5528;font:700 11.5px 'Atkinson Hyperlegible',sans-serif">Protein · in band</span>
+        <span style="padding:3px 10px;border-radius:999px;white-space:nowrap;background:#F3EDE2;color:#6F6557;font:700 11.5px 'Atkinson Hyperlegible',sans-serif">Carbs · in band</span>
+        <span style="padding:3px 10px;border-radius:999px;white-space:nowrap;background:#F3EDE2;color:#6F6557;font:700 11.5px 'Atkinson Hyperlegible',sans-serif">≈540 cal</span>
+      </div>
+      <div style="font:600 13px 'Instrument Sans',sans-serif;color:#3B6A34">Tap for ingredients &amp; steps ›</div>
+    </div>
+  </div>
+  <div style="margin-top:auto;padding:16px 16px 26px;border-top:1px solid #EFE7D9;background:rgba(250,247,241,.97)">
+    <div style="text-align:center;font:600 13px 'Instrument Sans',sans-serif;color:#8A7F6C;margin-bottom:12px">How did tonight go?</div>
+    <sc-if value="{{ logStacked }}" hint-placeholder-val="{{ true }}">
+      <button style="width:100%;height:64px;border:none;border-radius:18px;background:#CD4E24;color:#FFF6F0;font:700 19px 'Instrument Sans',sans-serif;cursor:pointer;box-shadow:0 6px 18px rgba(205,78,36,.30)">Cooked it</button>
+      <div style="display:flex;gap:10px;margin-top:10px">
+        <button style="flex:1;height:54px;border:1.5px solid #E0D6C4;border-radius:14px;background:#FFFFFF;font:600 15px 'Instrument Sans',sans-serif;color:#29241C;cursor:pointer">Swapped</button>
+        <button style="flex:1;height:54px;border:1.5px solid #E0D6C4;border-radius:14px;background:#FFFFFF;font:600 15px 'Instrument Sans',sans-serif;color:#29241C;cursor:pointer">Skipped</button>
+      </div>
+    </sc-if>
+    <sc-if value="{{ logRow }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;gap:10px">
+        <button style="flex:1.5;height:62px;border:none;border-radius:16px;background:#CD4E24;color:#FFF6F0;font:700 17px 'Instrument Sans',sans-serif;cursor:pointer;box-shadow:0 6px 18px rgba(205,78,36,.30)">Cooked</button>
+        <button style="flex:1;height:62px;border:1.5px solid #E0D6C4;border-radius:16px;background:#FFFFFF;font:600 14px 'Instrument Sans',sans-serif;color:#29241C;cursor:pointer">Swapped</button>
+        <button style="flex:1;height:62px;border:1.5px solid #E0D6C4;border-radius:16px;background:#FFFFFF;font:600 14px 'Instrument Sans',sans-serif;color:#29241C;cursor:pointer">Skipped</button>
+      </div>
+    </sc-if>
+  </div>
+</div>
+<sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}"><div class="dv-note">week strip = the only adherence surface: green = in band, ring = today, sand = upcoming. no numbers, no chart. the log buttons own the thumb zone — 64px primary, paprika reserved for exactly this moment.</div></sc-if>
+</div>
+
+<!-- 1g recipe detail -->
+<div class="dv-opt" id="1g">
+<div class="dv-olabel"><a class="dv-oid" href="#1g">1g</a>Recipe detail — kitchen-readable, arm&rsquo;s length</div>
+<div style="width:390px;background:#FAF7F1;border:1px solid #E6DCCB;border-radius:28px;overflow:hidden;box-shadow:0 12px 32px rgba(60,45,20,.10)">
+  <div style="height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font:600 13px 'Instrument Sans',sans-serif;color:#29241C"><span>9:41</span><div style="width:22px;height:11px;border:1.5px solid #29241C;border-radius:3.5px;position:relative"><div style="position:absolute;inset:2px;right:6px;background:#29241C;border-radius:1px"></div></div></div>
+  <div style="display:flex;align-items:center;gap:6px;padding:8px 20px;font:600 14px 'Instrument Sans',sans-serif;color:#3B6A34;cursor:pointer;min-height:44px;box-sizing:border-box"><span style="font-size:20px;line-height:1">‹</span> Today</div>
+  <div style="height:170px;margin:0 16px;border-radius:18px;background:linear-gradient(150deg,#C8763F,#96491E);position:relative;overflow:hidden">
+    <div style="position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.10) 0px,rgba(255,255,255,.10) 7px,rgba(255,255,255,0) 7px,rgba(255,255,255,0) 15px)"></div>
+    <span style="position:absolute;left:12px;bottom:9px;font:9px ui-monospace,monospace;color:rgba(255,255,255,.9)">recipe photo</span>
+  </div>
+  <div style="padding:16px 20px 8px">
+    <h1 style="margin:0 0 9px;font:700 24px/1.15 'Instrument Sans',sans-serif;color:#29241C">Smoky chickpea &amp; spinach skillet</h1>
+    <div style="display:flex;flex-wrap:wrap;gap:6px">
+      <span style="padding:3px 10px;border-radius:999px;white-space:nowrap;background:#ECF2E5;color:#2E5528;font:700 11.5px 'Atkinson Hyperlegible',sans-serif">30 min · under your ceiling ✓</span>
+      <span style="padding:3px 10px;border-radius:999px;white-space:nowrap;background:#F3EDE2;color:#6F6557;font:700 11.5px 'Atkinson Hyperlegible',sans-serif">1 skillet</span>
+      <span style="padding:3px 10px;border-radius:999px;white-space:nowrap;background:#F3EDE2;color:#6F6557;font:700 11.5px 'Atkinson Hyperlegible',sans-serif">Protein · in band</span>
+    </div>
+  </div>
+  <div style="padding:12px 20px 4px">
+    <div style="font:700 12px 'Instrument Sans',sans-serif;letter-spacing:.08em;color:#8A7F6C;margin-bottom:6px">INGREDIENTS · YOUR PORTION (1½ SERVINGS)</div>
+    <div style="background:#FFFFFF;border:1px solid #E9E0D2;border-radius:16px;padding:4px 16px">
+      <sc-for list="{{ ingredients }}" as="i" hint-placeholder-count="9">
+      <div style="display:flex;align-items:baseline;gap:12px;min-height:42px;align-items:center;border-top:1px solid #F4EEE2;display:flex">
+        <span style="flex:1;font:400 16px 'Atkinson Hyperlegible',sans-serif;color:#29241C">{{ i.n }}</span>
+        <span style="flex:none;font:400 15px 'Atkinson Hyperlegible',sans-serif;color:#8A7F6C">{{ i.q }}</span>
+      </div>
+      </sc-for>
+    </div>
+  </div>
+  <div style="padding:14px 20px 26px">
+    <div style="font:700 12px 'Instrument Sans',sans-serif;letter-spacing:.08em;color:#8A7F6C;margin-bottom:10px">STEPS</div>
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <sc-for list="{{ steps }}" as="s" hint-placeholder-count="6">
+      <div style="display:flex;gap:14px;align-items:flex-start">
+        <span style="width:32px;height:32px;border-radius:999px;white-space:nowrap;background:#ECF2E5;color:#2E5528;display:flex;align-items:center;justify-content:center;font:700 15px 'Atkinson Hyperlegible',sans-serif;flex:none">{{ s.n }}</span>
+        <span style="flex:1;font:400 18.5px/1.5 'Atkinson Hyperlegible',sans-serif;color:#29241C;padding-top:3px">{{ s.t }}</span>
+      </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+<sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}"><div class="dv-note">steps at 18.5px atkinson hyperlegible, one action per step — readable at arm&rsquo;s length with the phone propped on the counter. screen stays awake while this view is open.</div></sc-if>
+</div>
+
+<!-- 1h logged -->
+<div class="dv-opt" id="1h">
+<div class="dv-olabel"><a class="dv-oid" href="#1h">1h</a>Logged — confirmation after tapping Cooked</div>
+<div style="width:390px;height:844px;background:#FAF7F1;border:1px solid #E6DCCB;border-radius:28px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 12px 32px rgba(60,45,20,.10)">
+  <div style="height:40px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font:600 13px 'Instrument Sans',sans-serif;color:#29241C"><span>9:41</span><div style="width:22px;height:11px;border:1.5px solid #29241C;border-radius:3.5px;position:relative"><div style="position:absolute;inset:2px;right:6px;background:#29241C;border-radius:1px"></div></div></div>
+  <div style="padding:10px 20px 0">
+    <div style="font:400 13px 'Instrument Sans',sans-serif;color:#8A7F6C">Wednesday, July 15</div>
+    <h1 style="margin:2px 0 0;font:700 25px/1.1 'Instrument Sans',sans-serif;color:#29241C">Tonight&rsquo;s dinner</h1>
+    <div style="display:flex;justify-content:space-between;padding:16px 14px 0">
+      <sc-for list="{{ stripLogged }}" as="t" hint-placeholder-count="7">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:24px">
+        <span style="font:700 10px 'Instrument Sans',sans-serif;color:#9A907F">{{ t.l }}</span>
+        <span style="width:{{ t.size }};height:{{ t.size }};border-radius:99px;background:{{ t.bg }};border:{{ t.border }};box-sizing:border-box"></span>
+      </div>
+      </sc-for>
+    </div>
+  </div>
+  <div style="margin:18px 16px 0;background:#FFFFFF;border:1px solid #E9E0D2;border-radius:20px;overflow:hidden;opacity:.85">
+    <div style="height:120px;background:linear-gradient(150deg,#C8763F,#96491E);position:relative">
+      <div style="position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.10) 0px,rgba(255,255,255,.10) 7px,rgba(255,255,255,0) 7px,rgba(255,255,255,0) 15px)"></div>
+    </div>
+    <div style="padding:13px 16px 14px">
+      <div style="font:700 18px/1.2 'Instrument Sans',sans-serif;color:#29241C;margin-bottom:7px">Smoky chickpea &amp; spinach skillet</div>
+      <span style="padding:3px 10px;border-radius:999px;white-space:nowrap;background:#ECF2E5;color:#2E5528;font:700 11.5px 'Atkinson Hyperlegible',sans-serif">Cooked tonight ✓</span>
+    </div>
+  </div>
+  <div style="margin:auto 16px 26px;background:#ECF2E5;border:1px solid #D4E2C8;border-radius:20px;padding:26px 20px;text-align:center">
+    <div style="width:62px;height:62px;border-radius:999px;white-space:nowrap;background:#3B6A34;color:#FDFBF7;display:flex;align-items:center;justify-content:center;font:700 30px 'Instrument Sans',sans-serif;margin:0 auto 12px;box-shadow:0 6px 16px rgba(59,106,52,.30)">✓</div>
+    <div style="font:700 21px 'Instrument Sans',sans-serif;color:#29241C;margin-bottom:4px">Logged</div>
+    <div style="font:700 15px 'Atkinson Hyperlegible',sans-serif;color:#2E5528;margin-bottom:6px">3 of 3 days in band this week</div>
+    <div style="font:400 13px 'Instrument Sans',sans-serif;color:#6F6557">Thursday&rsquo;s dinner is ready when you are.</div>
+  </div>
+</div>
+<sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}"><div class="dv-note">motion: button compresses on press (scale .97), then today&rsquo;s strip dot pops to green with a 400ms spring as the confirmation card rises 12px and fades in. one tap, no follow-up questions.</div></sc-if>
+</div>
+
+<!-- 1i re-plan diff -->
+<div class="dv-opt" id="1i">
+<div class="dv-olabel"><a class="dv-oid" href="#1i">1i</a>Re-plan diff — after tapping Skipped</div>
+<div style="width:390px;background:#FAF7F1;border:1px solid #E6DCCB;border-radius:28px;overflow:hidden;box-shadow:0 12px 32px rgba(60,45,20,.10)">
+  <div style="height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font:600 13px 'Instrument Sans',sans-serif;color:#29241C"><span>9:41</span><div style="width:22px;height:11px;border:1.5px solid #29241C;border-radius:3.5px;position:relative"><div style="position:absolute;inset:2px;right:6px;background:#29241C;border-radius:1px"></div></div></div>
+  <div style="padding:10px 20px 0">
+    <div style="font:400 13px 'Instrument Sans',sans-serif;color:#8A7F6C">Wednesday, July 15</div>
+    <div style="display:flex;justify-content:space-between;padding:14px 14px 0">
+      <sc-for list="{{ stripSkipped }}" as="t" hint-placeholder-count="7">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:24px">
+        <span style="font:700 10px 'Instrument Sans',sans-serif;color:#9A907F">{{ t.l }}</span>
+        <span style="width:{{ t.size }};height:{{ t.size }};border-radius:99px;background:{{ t.bg }};border:{{ t.border }};box-sizing:border-box"></span>
+      </div>
+      </sc-for>
+    </div>
+  </div>
+  <div style="margin:18px 16px 0;background:#FBEBE2;border:1px solid #F3D5C5;border-radius:18px;padding:15px 16px">
+    <div style="font:700 15.5px 'Instrument Sans',sans-serif;color:#A03E1B;margin-bottom:3px">Plan updated — Thursday &amp; Friday changed</div>
+    <div style="font:400 13px/1.45 'Instrument Sans',sans-serif;color:#7C4A31">This keeps your protein in band after tonight&rsquo;s skip. Nothing else moved.</div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px;padding:12px 16px 4px">
+    <sc-for list="{{ diffDays }}" as="d" hint-placeholder-count="2">
+    <div style="background:#FFFFFF;border:1px solid #E9E0D2;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font:700 11px 'Instrument Sans',sans-serif;letter-spacing:.07em;color:#8A7F6C;flex:1">{{ d.day }}</span>
+        <span style="padding:2px 9px;border-radius:999px;white-space:nowrap;background:#FBEBE2;color:#A03E1B;font:700 10.5px 'Atkinson Hyperlegible',sans-serif">Updated</span>
+      </div>
+      <div style="font:400 12px 'Instrument Sans',sans-serif;color:#9A907F;text-decoration:line-through">{{ d.was }}</div>
+      <div style="display:flex;gap:12px">
+        <div style="width:66px;height:66px;border-radius:11px;flex:none;background:linear-gradient(140deg,{{ d.p1 }},{{ d.p2 }});position:relative;overflow:hidden">
+          <div style="position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.12) 0px,rgba(255,255,255,.12) 5px,rgba(255,255,255,0) 5px,rgba(255,255,255,0) 11px)"></div>
+        </div>
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+          <div style="font:600 15px/1.2 'Instrument Sans',sans-serif;color:#29241C">{{ d.name }}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px">
+            <span style="padding:2px 8px;border-radius:999px;white-space:nowrap;background:#ECF2E5;color:#2E5528;font:700 10.5px 'Atkinson Hyperlegible',sans-serif">{{ d.time }} min ✓</span>
+            <span style="padding:2px 8px;border-radius:999px;white-space:nowrap;background:#ECF2E5;color:#2E5528;font:700 10.5px 'Atkinson Hyperlegible',sans-serif">Protein · in band</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:7px">
+            <span style="padding:1.5px 8px;border-radius:999px;white-space:nowrap;border:1.5px solid #D4E2C8;color:#2E5528;font:700 11px 'Atkinson Hyperlegible',sans-serif">{{ d.fit }}/10</span>
+            <span style="font:400 12px/1.3 'Instrument Sans',sans-serif;color:#6F6557">{{ d.reason }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    </sc-for>
+  </div>
+  <div style="padding:12px 16px 24px">
+    <button style="width:100%;height:52px;border:none;border-radius:14px;background:#3B6A34;color:#FDFBF7;font:600 16px 'Instrument Sans',sans-serif;cursor:pointer;box-shadow:0 4px 12px rgba(59,106,52,.25)">Looks good</button>
+    <div style="text-align:center;font:400 12px 'Instrument Sans',sans-serif;color:#8A7F6C;margin-top:10px">Only these two days changed — the rest of your week is untouched.</div>
+  </div>
+</div>
+<sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}"><div class="dv-note">never a whole new week — a diff banner + only the changed days, confirmed in one tap. wednesday&rsquo;s dot goes quiet (sand), not red; a missed day is neutral, never punished.</div></sc-if>
+</div>
+</div>
+
+<p class="dv-note" style="margin-top:30px">try next: &ldquo;make <a class="dv-oid" href="#1f">1f</a> fully interactive as one flow&rdquo; · &ldquo;show the log buttons as one row&rdquo; (Tweaks → Log buttons) · &ldquo;drop in real recipe photos&rdquo;</p>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showAnnotations&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Canvas&quot;},&quot;logLayout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;stacked&quot;,&quot;row&quot;],&quot;default&quot;:&quot;stacked&quot;,&quot;tsType&quot;:&quot;'stacked' | 'row'&quot;,&quot;section&quot;:&quot;Today view&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const days = [
+      { day: 'Monday', name: 'Skillet lemon chicken & orzo', time: 25, cal: 610, fit: 9, reason: 'High protein; uses the chicken already in your pantry', p1: '#E8C878', p2: '#C08F42' },
+      { day: 'Tuesday', name: 'Ginger-scallion salmon bowls', time: 20, cal: 580, fit: 9, reason: 'Omega-rich; the rice cooks while the salmon roasts', p1: '#E8A48C', p2: '#C4714F' },
+      { day: 'Wednesday', name: 'Smoky chickpea & spinach skillet', time: 30, cal: 540, fit: 8, reason: 'Meat-free night; protein still lands in band', p1: '#C8763F', p2: '#96491E' },
+      { day: 'Thursday', name: 'Turkey larb lettuce cups', time: 25, cal: 520, fit: 8, reason: "Lightest night; balances Friday's richer dinner", p1: '#A8BC7E', p2: '#75904B' },
+      { day: 'Friday', name: 'Sheet-pan harissa shrimp & peppers', time: 20, cal: 590, fit: 9, reason: 'Fastest cook of the week; highest-protein night', p1: '#E08A5A', p2: '#AC532A' },
+      { day: 'Saturday', name: 'Miso-butter steak & greens', time: 30, cal: 680, fit: 8, reason: 'Weekend treat — still inside every band', p1: '#A57B5B', p2: '#714A2E' },
+      { day: 'Sunday', name: 'White bean & sausage ragout', time: 30, cal: 640, fit: 9, reason: 'One pot; leftovers cover Monday lunch', p1: '#D9A560', p2: '#A67232' }
+    ];
+
+    const alternates = [
+      { name: 'Chicken souvlaki bowls', time: 25, fit: 9, reason: "Same protein band; reuses Monday's lemon and herbs", p1: '#DFB36A', p2: '#AC7F35' },
+      { name: 'Seared tofu & green bean stir-fry', time: 20, fit: 8, reason: "Keeps Thursday meat-free and the week's carbs in band", p1: '#9FB877', p2: '#6C8B45' },
+      { name: 'Pork tenderloin with apples', time: 30, fit: 8, reason: 'Right at your 30-minute ceiling; protein in band', p1: '#D19A72', p2: '#9C6440' }
+    ];
+
+    const mkRow = (name, qty, checked) => checked
+      ? { name, qty, boxBorder: '#3B6A34', boxBg: '#3B6A34', check: '✓', color: '#9A907F', tdec: 'line-through' }
+      : { name, qty, boxBorder: '#C9BCA4', boxBg: '#FFFFFF', check: '', color: '#29241C', tdec: 'none' };
+
+    const openGroups = [
+      { name: 'Produce', left: 5, rows: [
+        mkRow('Bell peppers', '3', false), mkRow('Baby spinach', '320 g', false), mkRow('Butter lettuce', '1 head', false),
+        mkRow('Green beans', '300 g', false), mkRow('Scallions', '2 bunches', false),
+        mkRow('Lemons', '4', true), mkRow('Yellow onions', '2', true), mkRow('Garlic', '1 head', true)
+      ]},
+      { name: 'Meat & fish', left: 4, rows: [
+        mkRow('Ground turkey', '500 g', false), mkRow('Shrimp, peeled', '600 g', false),
+        mkRow('Sirloin steak', '450 g', false), mkRow('Italian sausage', '400 g', false),
+        mkRow('Chicken thighs', '1.2 kg', true), mkRow('Salmon fillets', '700 g', true)
+      ]}
+    ];
+
+    const closedGroups = [
+      { name: 'Pantry', count: 6 }, { name: 'Dairy & eggs', count: 4 }, { name: 'Frozen', count: 1 }
+    ];
+
+    const doneGroups = [
+      { name: 'Produce', count: 8 }, { name: 'Meat & fish', count: 6 },
+      { name: 'Pantry', count: 6 }, { name: 'Dairy & eggs', count: 4 }, { name: 'Frozen', count: 1 }
+    ];
+
+    const ingredients = [
+      { n: 'Olive oil', q: '1 tbsp' }, { n: 'Yellow onion', q: '½, sliced' }, { n: 'Garlic', q: '2 cloves' },
+      { n: 'Smoked paprika', q: '1 tsp' }, { n: 'Chickpeas', q: '1 can, drained' }, { n: 'Baby spinach', q: '120 g' },
+      { n: 'Feta', q: '40 g, crumbled' }, { n: 'Lemon', q: '½, juiced' }, { n: 'Greek yogurt', q: '2 tbsp, to serve' }
+    ];
+
+    const steps = [
+      { n: 1, t: 'Warm the olive oil in your largest skillet over medium-high heat.' },
+      { n: 2, t: 'Add the onion with a pinch of salt. Cook 4–5 minutes, until soft and golden at the edges.' },
+      { n: 3, t: 'Stir in the garlic and smoked paprika. 30 seconds — just until it smells toasty.' },
+      { n: 4, t: 'Add the chickpeas. Leave them untouched 3–4 minutes so they crisp a little.' },
+      { n: 5, t: 'Pile in the spinach in two batches, folding until just wilted.' },
+      { n: 6, t: 'Off the heat: lemon juice, feta, a spoon of yogurt on top. Plate it.' }
+    ];
+
+    const dot = (l, state) => {
+      if (state === 'band') return { l, size: '14px', bg: '#3B6A34', border: 'none' };
+      if (state === 'today') return { l, size: '17px', bg: '#FFFFFF', border: '3px solid #CD4E24' };
+      if (state === 'skip') return { l, size: '14px', bg: '#D8CFC0', border: 'none' };
+      return { l, size: '14px', bg: '#E9E0D2', border: 'none' };
+    };
+    const L = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+    const strip = L.map((l, i) => dot(l, i < 2 ? 'band' : i === 2 ? 'today' : 'up'));
+    const stripLogged = L.map((l, i) => dot(l, i <= 2 ? 'band' : 'up'));
+    const stripSkipped = L.map((l, i) => dot(l, i < 2 ? 'band' : i === 2 ? 'skip' : 'up'));
+
+    const diffDays = [
+      { day: 'Thursday', was: 'Turkey larb lettuce cups', name: 'Chicken souvlaki bowls', time: 25, fit: 9, reason: "Adds back tonight's missed protein", p1: '#DFB36A', p2: '#AC7F35' },
+      { day: 'Friday', was: 'Sheet-pan harissa shrimp & peppers', name: 'Pork tenderloin with apples', time: 30, fit: 8, reason: 'Higher-protein swap keeps the week in band', p1: '#D19A72', p2: '#9C6440' }
+    ];
+
+    const logLayout = this.props.logLayout ?? 'stacked';
+
+    return {
+      days,
+      daysShort: days.slice(0, 4),
+      alternates,
+      openGroups, closedGroups, doneGroups,
+      ingredients, steps,
+      strip, stripLogged, stripSkipped,
+      diffDays,
+      showNotes: this.props.showAnnotations ?? true,
+      logStacked: logLayout === 'stacked',
+      logRow: logLayout === 'row'
+    };
+  }
+}
+</script>
+</body>
+</html>
