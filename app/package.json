@@ -9,11 +9,13 @@
     "lint": "oxlint"
   },
   "dependencies": {
-    "next": "16.2.10",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
     "@skilletfresh/contracts": "*",
-    "@skilletfresh/db": "*"
+    "@skilletfresh/db": "*",
+    "bcryptjs": "^3.0.3",
+    "next": "16.2.10",
+    "next-auth": "^5.0.0-beta.31",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
   },
   "devDependencies": {
     "@types/node": "20.19.43",
