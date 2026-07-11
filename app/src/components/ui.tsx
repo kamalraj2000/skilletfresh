@@ -1,4 +1,4 @@
-import { DAY_LETTERS, TODAY_INDEX } from './data';
+import { DAY_LETTERS, TODAY_INDEX } from '@/lib/data';
 
 export function Photo({
   p1,

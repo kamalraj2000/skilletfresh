@@ -1,25 +1,36 @@
-# SkilletFresh — core weekly loop
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-Implementation of the Claude Design prototype [`design/SkilletFresh Weekly Loop.dc.html`](../design/SkilletFresh%20Weekly%20Loop.dc.html)
-(project: [SkilletFresh weekly meal planner](https://claude.ai/design/p/5ae4183c-9f44-491b-8644-36f24257f770)).
-Covers the three screens in [docs/design-prompt-core-loop.md](../docs/design-prompt-core-loop.md), wired as one interactive flow:
+## Getting Started
 
-1. **Sunday Review** — default, swap bottom sheet (3 scored alternates), locked read-only state
-2. **Shopping List** — aisle-grouped check-off with progress, trip-complete + skippable receipt prompt
-3. **Today View** — week strip, hero recipe card, kitchen-readable recipe detail, one-tap
-   Cooked / Swapped / Skipped log, logged confirmation, and the re-plan diff after a skip or swap
+First, run the development server:
 
-Data is seeded from the design file (`src/data.ts`) — in the real build it comes from the
-planner agent; those shapes are the handoff contract. Recipe photos are the design's warm
-gradient placeholders pending real photography.
-
-## Run
-
-```sh
-npm install --include=dev   # dev deps are skipped if NODE_ENV=production
+```bash
 npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-Vite + React + TypeScript. Design tokens (palette, type, motion curves) live in `src/index.css`
-and match the Claude Design spec: Instrument Sans + Atkinson Hyperlegible, herb green primary,
-paprika reserved for logging and progress.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

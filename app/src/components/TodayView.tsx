@@ -1,7 +1,9 @@
+'use client';
+
 import { useState } from 'react';
-import type { DayPlan } from './data';
-import { replanDiff, TODAY_INDEX, TODAY_LABEL, todayRecipe } from './data';
-import { Chip, Photo, WeekStrip, stripStatuses } from './components';
+import type { DayPlan } from '@/lib/data';
+import { replanDiff, TODAY_INDEX, TODAY_LABEL, todayRecipe } from '@/lib/data';
+import { Chip, Photo, WeekStrip, stripStatuses } from '@/components/ui';
 
 export type LogChoice = 'cooked' | 'swapped' | 'skipped';
 

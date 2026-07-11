@@ -1,6 +1,8 @@
+'use client';
+
 import { useMemo, useState } from 'react';
-import type { Aisle } from './data';
-import { EST_GROCERIES } from './data';
+import type { Aisle } from '@/lib/data';
+import { EST_GROCERIES } from '@/lib/data';
 
 export function ShoppingList({
   aisles,

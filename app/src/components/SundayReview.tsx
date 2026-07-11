@@ -1,7 +1,9 @@
+'use client';
+
 import { useState } from 'react';
-import type { DayPlan, Meal } from './data';
-import { alternates, EST_GROCERIES, WEEK_LABEL } from './data';
-import { Chip, Photo } from './components';
+import type { DayPlan, Meal } from '@/lib/data';
+import { alternates, EST_GROCERIES, WEEK_LABEL } from '@/lib/data';
+import { Chip, Photo } from '@/components/ui';
 
 export function SundayReview({
   days,
