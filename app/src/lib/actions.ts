@@ -89,12 +89,12 @@ export async function logTonight(plannedMealId: string, choice: 'cooked' | 'swap
       });
     }
 
-    // Interim: the deterministic stub proposes the diff until the agent
-    // worker (Phase 6) takes over AgentJob processing.
+    // Stub proposes the diff instantly unless the agent worker owns re-plans
+    // (REPLAN_STUB=0). With the worker on, the job above produces the real one.
     const pending = await prisma.replanProposal.findFirst({
       where: { planId: meal.planId, status: 'PENDING' },
     });
-    if (!pending) {
+    if (!pending && process.env.REPLAN_STUB !== '0') {
       const output = stubReplanOutput(
         meal.plan.meals.map((m) => ({ dayIndex: m.dayIndex, name: m.recipe.name })),
         meal.dayIndex,

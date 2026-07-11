@@ -13,7 +13,20 @@ async function upsertRecipe(tx: Tx, spec: RecipeSpec, parsedVia: 'SEED' | 'JSONL
   const existing = spec.sourceUrl
     ? await tx.recipe.findUnique({ where: { sourceUrl: spec.sourceUrl } })
     : await tx.recipe.findFirst({ where: { name: spec.name } });
-  if (existing) return existing;
+  if (existing) {
+    // merge richer data into the corpus row, never clobber real content
+    const data: Record<string, unknown> = {};
+    if (spec.proteinG != null && existing.proteinG == null) data.proteinG = spec.proteinG;
+    if (spec.portionLabel && !existing.portionLabel) data.portionLabel = spec.portionLabel;
+    const existingHasRealSteps = existing.steps.length > 1;
+    if (!existingHasRealSteps && spec.steps.length > 1) {
+      data.steps = spec.steps;
+      data.ingredients = spec.ingredients;
+    }
+    return Object.keys(data).length
+      ? tx.recipe.update({ where: { id: existing.id }, data })
+      : existing;
+  }
   return tx.recipe.create({
     data: {
       name: spec.name,

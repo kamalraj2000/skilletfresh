@@ -2,5 +2,18 @@
   "name": "@skilletfresh/agent",
   "version": "0.0.0",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "latest",
+    "@skilletfresh/contracts": "*",
+    "@skilletfresh/db": "*",
+    "croner": "^10",
+    "dotenv": "^17",
+    "zod": "^4"
+  },
+  "scripts": {
+    "worker": "tsx src/worker.ts",
+    "plan": "tsx src/cli.ts plan",
+    "replan": "tsx src/cli.ts replan"
+  }
 }
