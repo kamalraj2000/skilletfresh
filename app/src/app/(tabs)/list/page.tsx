@@ -1,19 +1,20 @@
-'use client';
-
-import { useRouter } from 'next/navigation';
+import { requireProfile } from '@/lib/session';
+import { aisleVMs, currentPlan } from '@/lib/queries';
+import { formatCents } from '@/lib/view';
 import { ShoppingList } from '@/components/ShoppingList';
-import { useAppState } from '@/lib/app-state';
+import { EmptyWeek } from '@/components/EmptyWeek';
 
-export default function ListPage() {
-  const router = useRouter();
-  const { aisles, receiptDone, toggleItem, closeReceipt } = useAppState();
+export default async function ListPage() {
+  const { profileId } = await requireProfile();
+  const plan = await currentPlan(profileId);
+  if (!plan?.shoppingList) return <EmptyWeek />;
+
   return (
     <ShoppingList
-      aisles={aisles}
-      onToggleItem={toggleItem}
-      receiptDone={receiptDone}
-      onReceiptClose={closeReceipt}
-      onContinueToToday={() => router.push('/today')}
+      listId={plan.shoppingList.id}
+      estGroceries={formatCents(plan.estGroceriesCents)}
+      aisles={aisleVMs(plan)}
+      receiptDone={plan.shoppingList.receiptClosedAt !== null}
     />
   );
 }

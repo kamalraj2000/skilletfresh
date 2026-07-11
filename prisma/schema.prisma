@@ -133,6 +133,7 @@ model ShoppingList {
   planId            String         @unique
   plan              Plan           @relation(fields: [planId], references: [id], onDelete: Cascade)
   receiptTotalCents Int? // optional; feeds the price-learning experiment
+  receiptClosedAt   DateTime? // set when the receipt prompt is saved or skipped
   items             ShoppingItem[]
 }
 

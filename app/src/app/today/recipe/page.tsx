@@ -1,12 +1,31 @@
-'use client';
-
-import { useRouter } from 'next/navigation';
+import { requireProfile } from '@/lib/session';
+import { currentPlan, dayVMs } from '@/lib/queries';
+import { todayIndexOf } from '@/lib/view';
 import { RecipeDetail } from '@/components/TodayView';
-import { TODAY_INDEX } from '@/lib/data';
-import { useAppState } from '@/lib/app-state';
+import { EmptyWeek } from '@/components/EmptyWeek';
 
-export default function RecipePage() {
-  const router = useRouter();
-  const { days } = useAppState();
-  return <RecipeDetail meal={days[TODAY_INDEX]} onBack={() => router.push('/today')} />;
+export default async function RecipePage() {
+  const { profileId } = await requireProfile();
+  const plan = await currentPlan(profileId);
+  if (!plan) return <EmptyWeek />;
+
+  const todayIndex = todayIndexOf(plan.weekStart);
+  const meal = dayVMs(plan).find((d) => d.dayIndex === todayIndex);
+  const row = plan.meals.find((m) => m.dayIndex === todayIndex);
+  if (!meal || !row) return <EmptyWeek />;
+
+  const ingredients = (row.recipe.ingredients as { n: string; q: string }[]) ?? [];
+  return (
+    <RecipeDetail
+      meal={meal}
+      recipe={{
+        portion: row.recipe.portionLabel ?? '',
+        ingredientsLabel: row.recipe.portionLabel
+          ? `Ingredients · your portion (${row.recipe.portionLabel.split('· ')[1] ?? ''})`
+          : 'Ingredients',
+        ingredients,
+        steps: row.recipe.steps,
+      }}
+    />
+  );
 }

@@ -1,23 +1,30 @@
 'use client';
 
-import { useState } from 'react';
-import type { DayPlan, Meal } from '@/lib/data';
-import { alternates, EST_GROCERIES, WEEK_LABEL } from '@/lib/data';
+import { useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { lockPlan, logout, swapMeal } from '@/lib/actions';
+import type { AlternateVM, DayPlanVM } from '@/lib/view';
 import { Chip, Photo } from '@/components/ui';
 
 export function SundayReview({
+  planId,
+  weekLabel,
+  estGroceries,
   days,
+  alternates,
   locked,
-  onSwap,
-  onLock,
-  onViewList,
+  avatarInitial,
 }: {
-  days: DayPlan[];
+  planId: string;
+  weekLabel: string;
+  estGroceries: string;
+  days: DayPlanVM[];
+  alternates: AlternateVM[];
   locked: boolean;
-  onSwap: (dayIndex: number, meal: Meal) => void;
-  onLock: () => void;
-  onViewList: () => void;
+  avatarInitial: string;
 }) {
+  const router = useRouter();
+  const [, startTransition] = useTransition();
   const [swapDay, setSwapDay] = useState<number | null>(null);
   const [sheetClosing, setSheetClosing] = useState(false);
   const [chosenAlt, setChosenAlt] = useState<number | null>(null);
@@ -38,7 +45,9 @@ export function SundayReview({
     const day = swapDay;
     // chosen card pulses once, then the sheet drops and the day card cross-fades
     setTimeout(() => {
-      onSwap(day, alternates[altIndex]);
+      startTransition(async () => {
+        await swapMeal(planId, days[day].dayIndex, alternates[altIndex].id);
+      });
       setSwappedDay(day);
       closeSheet();
     }, 360);
@@ -50,7 +59,13 @@ export function SundayReview({
         <span className="brand">
           Skillet<em>Fresh</em>
         </span>
-        <span className="avatar">P</span>
+        <button
+          className="avatar"
+          title="Sign out"
+          onClick={() => startTransition(async () => logout())}
+        >
+          {avatarInitial}
+        </button>
       </div>
 
       <div style={{ padding: '14px 20px 14px' }}>
@@ -63,7 +78,7 @@ export function SundayReview({
               <span className="locked-pill">Locked</span>
             </div>
             <div className="screen-sub" style={{ marginTop: 3 }}>
-              {WEEK_LABEL} · read-only
+              {weekLabel} · read-only
             </div>
           </>
         ) : (
@@ -71,7 +86,7 @@ export function SundayReview({
             <h1 className="screen-title" style={{ margin: '2px 0 3px' }}>
               Your week is ready
             </h1>
-            <div className="screen-sub">{WEEK_LABEL}</div>
+            <div className="screen-sub">{weekLabel}</div>
             <div
               style={{
                 marginTop: 12,
@@ -136,12 +151,14 @@ export function SundayReview({
       <div className="bottom-bar">
         <div style={{ flex: 'none' }}>
           <div className="cost-label">Est. groceries</div>
-          <div className="cost-value">{EST_GROCERIES}</div>
+          <div className="cost-value">{estGroceries}</div>
         </div>
         <button
           className="btn-primary"
           style={{ flex: 1, height: 52 }}
-          onClick={locked ? onViewList : onLock}
+          onClick={() =>
+            locked ? router.push('/list') : startTransition(async () => lockPlan(planId))
+          }
         >
           {locked ? 'View shopping list' : 'Lock plan & build list'}
         </button>
@@ -156,13 +173,13 @@ export function SundayReview({
               Swap {days[swapDay].day}&rsquo;s dinner
             </div>
             <div style={{ font: '400 13px var(--font-ui)', color: 'var(--ink-soft)', marginBottom: 14 }}>
-              3 alternates, ranked for the rest of your week. Tap one to replace.
+              {alternates.length} alternates, ranked for the rest of your week. Tap one to replace.
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {alternates.map((a, ai) => (
                 <button
                   className={`alt-card${chosenAlt === ai ? ' alt-card--chosen' : ''}`}
-                  key={a.name}
+                  key={a.id}
                   onClick={() => pickAlternate(ai)}
                 >
                   <Photo p1={a.p1} p2={a.p2} size={66} radius={11} />

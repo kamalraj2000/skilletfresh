@@ -1,4 +1,4 @@
-import { DAY_LETTERS, TODAY_INDEX } from '@/lib/data';
+import { DAY_LETTERS, type DayStatus } from '@/lib/view';
 
 export function Photo({
   p1,
@@ -48,8 +48,6 @@ export function Chip({
   return <span className={`chip${mod}`}>{children}</span>;
 }
 
-export type DayStatus = 'band' | 'today' | 'skip' | 'up';
-
 export function WeekStrip({
   statuses,
   popIndex,
@@ -77,13 +75,4 @@ export function WeekStrip({
       ))}
     </div>
   );
-}
-
-/** week strip derived from what's been logged so far */
-export function stripStatuses(loggedToday: 'band' | 'skip' | null): DayStatus[] {
-  return DAY_LETTERS.map((_, i) => {
-    if (i < TODAY_INDEX) return 'band';
-    if (i === TODAY_INDEX) return loggedToday ?? 'today';
-    return 'up';
-  });
 }

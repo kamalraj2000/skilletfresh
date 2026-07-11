@@ -103,24 +103,30 @@ export function stubPlannerOutput(weekStart: string): PlannerOutput {
   };
 }
 
-/** Replan issued after a skipped/swapped log — only these days change. */
-export function stubReplanOutput(): ReplanOutput {
+/**
+ * Replan issued after a skipped/swapped log — only future days change.
+ * Deterministic: swaps up to two of the remaining days for the two
+ * higher-protein stub replacements. Returns null when the week is over.
+ */
+export function stubReplanOutput(
+  currentMeals: { dayIndex: number; name: string }[],
+  todayIndex: number,
+): ReplanOutput | null {
+  const replacements = [
+    { recipe: recipe('Chicken souvlaki bowls', 25, 560), fit: 9, reason: "Adds back tonight's missed protein" },
+    { recipe: recipe('Pork tenderloin with apples', 30, 600), fit: 8, reason: 'Higher-protein swap keeps the week in band' },
+  ];
+  const futureDays = currentMeals
+    .filter((m) => m.dayIndex > todayIndex)
+    .sort((a, b) => a.dayIndex - b.dayIndex)
+    .slice(0, replacements.length);
+  if (futureDays.length === 0) return null;
+
   return {
-    entries: [
-      {
-        dayIndex: 3,
-        wasName: 'Turkey larb lettuce cups',
-        recipe: recipe('Chicken souvlaki bowls', 25, 560),
-        fit: 9,
-        reason: "Adds back tonight's missed protein",
-      },
-      {
-        dayIndex: 4,
-        wasName: 'Sheet-pan harissa shrimp & peppers',
-        recipe: recipe('Pork tenderloin with apples', 30, 600),
-        fit: 8,
-        reason: 'Higher-protein swap keeps the week in band',
-      },
-    ],
+    entries: futureDays.map((day, i) => ({
+      dayIndex: day.dayIndex,
+      wasName: day.name,
+      ...replacements[i],
+    })),
   };
 }

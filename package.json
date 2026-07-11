@@ -21,6 +21,7 @@
   "devDependencies": {
     "bcryptjs": "^3",
     "dotenv": "^17",
+    "playwright": "^1.61.1",
     "prisma": "^7",
     "tsx": "^4"
   }

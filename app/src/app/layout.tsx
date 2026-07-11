@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next';
 import { Atkinson_Hyperlegible, Instrument_Sans } from 'next/font/google';
-import { AppStateProvider } from '@/lib/app-state';
 import './globals.css';
 
 const instrumentSans = Instrument_Sans({
@@ -29,9 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${instrumentSans.variable} ${atkinsonHyperlegible.variable}`}>
       <body>
-        <AppStateProvider>
-          <div className="app-frame">{children}</div>
-        </AppStateProvider>
+        <div className="app-frame">{children}</div>
       </body>
     </html>
   );

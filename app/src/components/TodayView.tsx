@@ -1,47 +1,62 @@
 'use client';
 
-import { useState } from 'react';
-import type { DayPlan } from '@/lib/data';
-import { replanDiff, TODAY_INDEX, TODAY_LABEL, todayRecipe } from '@/lib/data';
-import { Chip, Photo, WeekStrip, stripStatuses } from '@/components/ui';
+import { useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { acceptReplan, logTonight } from '@/lib/actions';
+import type { DayPlanVM, DayStatus, LogChoice, RecipeDetailVM, ReplanEntryVM } from '@/lib/view';
+import { DAY_NAMES } from '@/lib/view';
+import { Chip, Photo, WeekStrip } from '@/components/ui';
 
-export type LogChoice = 'cooked' | 'swapped' | 'skipped';
+function listDayNames(entries: ReplanEntryVM[]): string {
+  const names = entries.map((e) => DAY_NAMES[e.dayIndex]);
+  return names.length > 1
+    ? `${names.slice(0, -1).join(', ')} & ${names[names.length - 1]}`
+    : names[0];
+}
 
 export function TodayView({
-  days,
+  today,
+  todayIndex,
+  todayLabel,
+  portionLabel,
+  statuses,
   logged,
-  replanPending,
-  onLog,
-  onConfirmReplan,
-  onOpenRecipe,
+  proposal,
 }: {
-  days: DayPlan[];
+  today: DayPlanVM;
+  todayIndex: number;
+  todayLabel: string;
+  portionLabel: string | null;
+  statuses: DayStatus[];
   logged: LogChoice | null;
-  replanPending: boolean;
-  onLog: (choice: LogChoice) => void;
-  onConfirmReplan: () => void;
-  onOpenRecipe: () => void;
+  proposal: { id: string; entries: ReplanEntryVM[] } | null;
 }) {
+  const router = useRouter();
+  const [, startTransition] = useTransition();
   const [justLogged, setJustLogged] = useState(false);
-  const today = days[TODAY_INDEX];
 
   const log = (choice: LogChoice) => {
     setJustLogged(true);
-    onLog(choice);
+    startTransition(async () => {
+      await logTonight(today.plannedMealId, choice);
+    });
   };
 
+  const inBand = statuses.filter((s, i) => i <= todayIndex && s === 'band').length;
+
   // re-plan diff state — after tapping Skipped or Swapped
-  if (replanPending) {
-    const changed = replanDiff.map((c) => ({ ...c, current: days[c.dayIndex] }));
+  if (proposal && logged && logged !== 'cooked') {
     return (
       <div className="screen">
         <div style={{ padding: '18px 20px 0' }}>
-          <div style={{ font: '400 13px var(--font-ui)', color: 'var(--ink-faint)' }}>{TODAY_LABEL}</div>
-          <WeekStrip statuses={stripStatuses(logged === 'cooked' ? 'band' : 'skip')} />
+          <div style={{ font: '400 13px var(--font-ui)', color: 'var(--ink-faint)' }}>{todayLabel}</div>
+          <WeekStrip statuses={statuses} />
         </div>
 
         <div className="diff-banner">
-          <div className="diff-banner__title">Plan updated — Thursday &amp; Friday changed</div>
+          <div className="diff-banner__title">
+            Plan updated — {listDayNames(proposal.entries)} changed
+          </div>
           <div className="diff-banner__body">
             This keeps your protein in band after tonight&rsquo;s {logged === 'swapped' ? 'swap' : 'skip'}. Nothing
             else moved.
@@ -49,11 +64,11 @@ export function TodayView({
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: '12px 16px 4px' }}>
-          {changed.map((c) => (
+          {proposal.entries.map((c) => (
             <div className="day-card" key={c.dayIndex}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span className="day-card__day" style={{ flex: 1 }}>
-                  {days[c.dayIndex].day.toUpperCase()}
+                  {DAY_NAMES[c.dayIndex].toUpperCase()}
                 </span>
                 <Chip updated>Updated</Chip>
               </div>
@@ -81,11 +96,16 @@ export function TodayView({
         </div>
 
         <div style={{ padding: '12px 16px 24px' }}>
-          <button className="btn-primary" style={{ width: '100%', height: 52 }} onClick={onConfirmReplan}>
+          <button
+            className="btn-primary"
+            style={{ width: '100%', height: 52 }}
+            onClick={() => startTransition(async () => acceptReplan(proposal.id))}
+          >
             Looks good
           </button>
           <div style={{ textAlign: 'center', font: '400 12px var(--font-ui)', color: 'var(--ink-faint)', marginTop: 10 }}>
-            Only these two days changed — the rest of your week is untouched.
+            Only {proposal.entries.length > 1 ? `these ${proposal.entries.length} days` : 'this day'} changed —
+            the rest of your week is untouched.
           </div>
         </div>
       </div>
@@ -97,11 +117,11 @@ export function TodayView({
     return (
       <div className="screen">
         <div style={{ padding: '18px 20px 0' }}>
-          <div style={{ font: '400 13px var(--font-ui)', color: 'var(--ink-faint)' }}>{TODAY_LABEL}</div>
+          <div style={{ font: '400 13px var(--font-ui)', color: 'var(--ink-faint)' }}>{todayLabel}</div>
           <h1 className="screen-title" style={{ fontSize: 25, margin: '2px 0 0' }}>
             Tonight&rsquo;s dinner
           </h1>
-          <WeekStrip statuses={stripStatuses('band')} popIndex={justLogged ? TODAY_INDEX : undefined} />
+          <WeekStrip statuses={statuses} popIndex={justLogged ? todayIndex : undefined} />
         </div>
 
         <div
@@ -125,10 +145,10 @@ export function TodayView({
           <div className="logged-card__badge">✓</div>
           <div style={{ font: '700 21px var(--font-ui)', marginBottom: 4 }}>Logged</div>
           <div style={{ font: '700 15px var(--font-data)', color: 'var(--green-deep)', marginBottom: 6 }}>
-            3 of 3 days in band this week
+            {inBand} of {todayIndex + 1} days in band this week
           </div>
           <div style={{ font: '400 13px var(--font-ui)', color: 'var(--ink-soft)' }}>
-            Thursday&rsquo;s dinner is ready when you are.
+            {todayIndex < 6 ? `${DAY_NAMES[todayIndex + 1]}'s dinner is ready when you are.` : 'That wraps the week.'}
           </div>
         </div>
       </div>
@@ -140,11 +160,11 @@ export function TodayView({
     return (
       <div className="screen">
         <div style={{ padding: '18px 20px 0' }}>
-          <div style={{ font: '400 13px var(--font-ui)', color: 'var(--ink-faint)' }}>{TODAY_LABEL}</div>
+          <div style={{ font: '400 13px var(--font-ui)', color: 'var(--ink-faint)' }}>{todayLabel}</div>
           <h1 className="screen-title" style={{ fontSize: 25, margin: '2px 0 0' }}>
             Tonight&rsquo;s dinner
           </h1>
-          <WeekStrip statuses={stripStatuses('skip')} />
+          <WeekStrip statuses={statuses} />
         </div>
         <div className="logged-card">
           <div className="logged-card__badge" style={{ background: 'var(--sand)', boxShadow: 'none' }}>
@@ -154,7 +174,8 @@ export function TodayView({
             {logged === 'swapped' ? 'Swap logged' : 'Skip logged'}
           </div>
           <div style={{ font: '400 13px var(--font-ui)', color: 'var(--ink-soft)' }}>
-            Your plan is updated. Thursday&rsquo;s dinner is ready when you are.
+            Your plan is updated.{' '}
+            {todayIndex < 6 ? `${DAY_NAMES[todayIndex + 1]}'s dinner is ready when you are.` : ''}
           </div>
         </div>
       </div>
@@ -165,14 +186,14 @@ export function TodayView({
   return (
     <div className="screen">
       <div style={{ padding: '18px 20px 0' }}>
-        <div style={{ font: '400 13px var(--font-ui)', color: 'var(--ink-faint)' }}>{TODAY_LABEL}</div>
+        <div style={{ font: '400 13px var(--font-ui)', color: 'var(--ink-faint)' }}>{todayLabel}</div>
         <h1 className="screen-title" style={{ fontSize: 25, margin: '2px 0 0' }}>
           Tonight&rsquo;s dinner
         </h1>
-        <WeekStrip statuses={stripStatuses(null)} />
+        <WeekStrip statuses={statuses} />
       </div>
 
-      <button className="hero-card" onClick={onOpenRecipe}>
+      <button className="hero-card" onClick={() => router.push('/today/recipe')}>
         <Photo
           p1={today.p1}
           p2={today.p2}
@@ -185,7 +206,7 @@ export function TodayView({
           <div style={{ font: '700 20px/1.2 var(--font-ui)', marginBottom: 9 }}>{today.name}</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 9 }}>
             <Chip green>{today.time} min · under your ceiling ✓</Chip>
-            <Chip>{todayRecipe.portion}</Chip>
+            {portionLabel && <Chip>{portionLabel}</Chip>}
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 11 }}>
             <Chip green>Protein · in band</Chip>
@@ -216,10 +237,17 @@ export function TodayView({
   );
 }
 
-export function RecipeDetail({ meal, onBack }: { meal: DayPlan; onBack: () => void }) {
+export function RecipeDetail({
+  meal,
+  recipe,
+}: {
+  meal: DayPlanVM;
+  recipe: RecipeDetailVM;
+}) {
+  const router = useRouter();
   return (
     <div className="screen">
-      <button className="back-row" onClick={onBack}>
+      <button className="back-row" onClick={() => router.push('/today')}>
         <span className="caret">‹</span> Today
       </button>
       <Photo
@@ -241,7 +269,7 @@ export function RecipeDetail({ meal, onBack }: { meal: DayPlan; onBack: () => vo
       </div>
       <div style={{ padding: '12px 20px 4px' }}>
         <div className="section-label" style={{ marginBottom: 6 }}>
-          {todayRecipe.ingredientsLabel}
+          {recipe.ingredientsLabel}
         </div>
         <div
           style={{
@@ -251,7 +279,7 @@ export function RecipeDetail({ meal, onBack }: { meal: DayPlan; onBack: () => vo
             padding: '4px 16px',
           }}
         >
-          {todayRecipe.ingredients.map((i) => (
+          {recipe.ingredients.map((i) => (
             <div className="ingredient-row" key={i.n}>
               <span className="ingredient-row__name">{i.n}</span>
               <span className="ingredient-row__qty">{i.q}</span>
@@ -264,7 +292,7 @@ export function RecipeDetail({ meal, onBack }: { meal: DayPlan; onBack: () => vo
           Steps
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-          {todayRecipe.steps.map((t, i) => (
+          {recipe.steps.map((t, i) => (
             <div className="step-row" key={i}>
               <span className="step-row__num">{i + 1}</span>
               <span className="step-row__text">{t}</span>

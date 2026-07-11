@@ -1,46 +1,70 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import type { Aisle } from '@/lib/data';
-import { EST_GROCERIES } from '@/lib/data';
+import { useMemo, useOptimistic, useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { closeReceipt, toggleItem } from '@/lib/actions';
+import type { AisleVM } from '@/lib/view';
+
+function toggleIn(aisles: AisleVM[], itemId: string): AisleVM[] {
+  return aisles.map((a) => ({
+    ...a,
+    items: a.items.map((it) => (it.id === itemId ? { ...it, checked: !it.checked } : it)),
+  }));
+}
 
 export function ShoppingList({
+  listId,
+  estGroceries,
   aisles,
-  onToggleItem,
   receiptDone,
-  onReceiptClose,
-  onContinueToToday,
 }: {
-  aisles: Aisle[];
-  onToggleItem: (aisleName: string, itemId: string) => void;
+  listId: string;
+  estGroceries: string;
+  aisles: AisleVM[];
   receiptDone: boolean;
-  onReceiptClose: (total: string | null) => void;
-  onContinueToToday: () => void;
 }) {
+  const router = useRouter();
+  const [, startTransition] = useTransition();
+  // in-store check-offs must feel instant — optimistic, server catches up
+  const [optimisticAisles, applyOptimistic] = useOptimistic(aisles, toggleIn);
   const [collapsed, setCollapsed] = useState<Set<string>>(
     () => new Set(aisles.filter((a) => a.items.every((i) => !i.checked) && a.items.length <= 6).map((a) => a.name)),
   );
   const [leaving, setLeaving] = useState<string | null>(null);
   const [receipt, setReceipt] = useState('');
 
-  const total = useMemo(() => aisles.reduce((n, a) => n + a.items.length, 0), [aisles]);
+  const total = useMemo(() => optimisticAisles.reduce((n, a) => n + a.items.length, 0), [optimisticAisles]);
   const left = useMemo(
-    () => aisles.reduce((n, a) => n + a.items.filter((i) => !i.checked).length, 0),
-    [aisles],
+    () => optimisticAisles.reduce((n, a) => n + a.items.filter((i) => !i.checked).length, 0),
+    [optimisticAisles],
   );
   const allDone = left === 0;
 
-  const toggle = (aisleName: string, itemId: string, isChecked: boolean) => {
+  const commitToggle = (itemId: string) =>
+    startTransition(async () => {
+      applyOptimistic(itemId);
+      await toggleItem(itemId);
+    });
+
+  const toggle = (itemId: string, isChecked: boolean) => {
     if (!isChecked) {
       // checked row squishes closed, then re-enters at the bottom of its group
       setLeaving(itemId);
       setTimeout(() => {
-        onToggleItem(aisleName, itemId);
+        commitToggle(itemId);
         setLeaving(null);
       }, 180);
     } else {
-      onToggleItem(aisleName, itemId);
+      commitToggle(itemId);
     }
+  };
+
+  const submitReceipt = (value: string | null) => {
+    const cents =
+      value === null ? null : Math.round(Number.parseFloat(value.replace(/[^0-9.]/g, '')) * 100);
+    startTransition(async () => {
+      await closeReceipt(listId, Number.isFinite(cents as number) ? cents : null);
+    });
   };
 
   const toggleCollapse = (name: string) =>
@@ -59,7 +83,7 @@ export function ShoppingList({
             Shopping list
           </h1>
           <span style={{ font: '400 13px var(--font-data)', color: 'var(--ink-faint)' }}>
-            Est. {EST_GROCERIES}
+            Est. {estGroceries}
           </span>
         </div>
         {!allDone && (
@@ -111,14 +135,14 @@ export function ShoppingList({
                 <button
                   className="btn-secondary"
                   style={{ flex: 1, height: 46, fontSize: 14, color: 'var(--ink-soft)' }}
-                  onClick={() => onReceiptClose(null)}
+                  onClick={() => submitReceipt(null)}
                 >
                   Skip
                 </button>
                 <button
                   className="btn-primary"
                   style={{ flex: 1.4, height: 46, fontSize: 14, borderRadius: 12, boxShadow: 'none' }}
-                  onClick={() => onReceiptClose(receipt || null)}
+                  onClick={() => submitReceipt(receipt || null)}
                 >
                   Save total
                 </button>
@@ -138,13 +162,13 @@ export function ShoppingList({
             <div style={{ font: '400 13.5px/1.5 var(--font-ui)', color: '#4C6244', margin: '0 0 14px 52px' }}>
               Every dinner this week is now covered.
             </div>
-            <button className="btn-primary" style={{ width: '100%', height: 48 }} onClick={onContinueToToday}>
+            <button className="btn-primary" style={{ width: '100%', height: 48 }} onClick={() => router.push('/today')}>
               Go to tonight&rsquo;s dinner
             </button>
           </div>
         )}
 
-        {aisles.map((aisle) => {
+        {optimisticAisles.map((aisle) => {
           const doneCount = aisle.items.filter((i) => i.checked).length;
           const aisleDone = doneCount === aisle.items.length;
           const isCollapsed = collapsed.has(aisle.name);
@@ -193,7 +217,7 @@ export function ShoppingList({
                       .filter(Boolean)
                       .join(' ')}
                     key={it.id}
-                    onClick={() => toggle(aisle.name, it.id, it.checked)}
+                    onClick={() => toggle(it.id, it.checked)}
                   >
                     <span className={`checkbox${it.checked ? ' checkbox--done' : ''}`}>
                       {it.checked ? '✓' : ''}
