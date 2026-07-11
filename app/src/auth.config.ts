@@ -9,8 +9,16 @@ export const authConfig = {
   providers: [],
   callbacks: {
     authorized({ auth, request }) {
-      const { pathname } = request.nextUrl;
+      const { pathname, searchParams } = request.nextUrl;
       if (pathname.startsWith('/signin')) return true;
+      // the agent's PDF renderer reaches the print route with a shared token
+      if (
+        pathname.endsWith('/print') &&
+        !!process.env.PRINT_TOKEN &&
+        searchParams.get('token') === process.env.PRINT_TOKEN
+      ) {
+        return true;
+      }
       return !!auth?.user;
     },
   },
