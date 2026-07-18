@@ -1,0 +1,30 @@
+{
+  "name": "skilletfresh",
+  "private": true,
+  "workspaces": [
+    "app",
+    "agent",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w app",
+    "build": "npm run build -w app",
+    "lint": "npm run lint -w app",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "prisma db seed",
+    "db:reset": "prisma migrate reset --force",
+    "db:studio": "prisma studio"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "bcryptjs": "^3",
+    "dotenv": "^17",
+    "playwright": "^1.61.1",
+    "prisma": "^7",
+    "tsx": "^4",
+    "typescript": "^7.0.2"
+  }
+}

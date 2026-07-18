@@ -1,0 +1,218 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../packages/db/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PlanStatus {
+  DRAFT
+  LOCKED
+}
+
+enum LogChoice {
+  COOKED
+  SWAPPED
+  SKIPPED
+}
+
+enum ReplanStatus {
+  PENDING
+  ACCEPTED
+  DISMISSED
+}
+
+enum ParsedVia {
+  SEED
+  JSONLD
+  LLM
+}
+
+enum AgentJobType {
+  WEEKLY_PLAN
+  REPLAN
+}
+
+enum AgentJobStatus {
+  QUEUED
+  RUNNING
+  DONE
+  FAILED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  profile      Profile?
+}
+
+model Profile {
+  id                String      @id @default(cuid())
+  userId            String      @unique
+  user              User        @relation(fields: [userId], references: [id])
+  displayName       String
+  proteinTargetG    Int
+  timeCeilingMin    Int
+  skillLevel        Int // 1 beginner … 5 confident
+  varietyPreference Int // 1 repeat-friendly … 5 novelty-seeking
+  planShape         String // 'daily' | 'batch'
+  dietTags          String[]
+  budgetCents       Int // track-only per PRD; never enforced
+  plans             Plan[]
+  logs              MealLog[]
+  pantry            PantryItem[]
+}
+
+/// Doubles as the cached recipe corpus the agent draws from.
+model Recipe {
+  id                 String      @id @default(cuid())
+  name               String
+  timeMin            Int
+  calories           Int
+  proteinG           Int?
+  portionLabel       String?
+  photoColor1        String? // designed gradient placeholder; app derives from name hash when absent
+  photoColor2        String?
+  ingredients        Json // [{ n, q }]
+  steps              String[]
+  sourceUrl          String?     @unique
+  publishedNutrition Json?
+  parsedVia          ParsedVia   @default(SEED)
+  lastFetched        DateTime?
+  plannedMeals       PlannedMeal[]
+  alternates         PlanAlternate[]
+  replanEntries      ReplanEntry[]
+}
+
+model Plan {
+  id                String          @id @default(cuid())
+  profileId         String
+  profile           Profile         @relation(fields: [profileId], references: [id])
+  weekStart         DateTime // Monday of the plan week
+  status            PlanStatus      @default(DRAFT)
+  estGroceriesCents Int
+  meals             PlannedMeal[]
+  alternates        PlanAlternate[]
+  shoppingList      ShoppingList?
+  replans           ReplanProposal[]
+
+  @@unique([profileId, weekStart])
+}
+
+model PlannedMeal {
+  id       String   @id @default(cuid())
+  planId   String
+  plan     Plan     @relation(fields: [planId], references: [id], onDelete: Cascade)
+  dayIndex Int // 0 = Monday
+  recipeId String
+  recipe   Recipe   @relation(fields: [recipeId], references: [id])
+  fitScore Int // 0–10
+  reason   String
+  log      MealLog?
+
+  @@unique([planId, dayIndex])
+}
+
+/// The scored swap pool shown in the swap sheet.
+model PlanAlternate {
+  id       String @id @default(cuid())
+  planId   String
+  plan     Plan   @relation(fields: [planId], references: [id], onDelete: Cascade)
+  recipeId String
+  recipe   Recipe @relation(fields: [recipeId], references: [id])
+  fitScore Int
+  reason   String
+}
+
+model ShoppingList {
+  id                String         @id @default(cuid())
+  planId            String         @unique
+  plan              Plan           @relation(fields: [planId], references: [id], onDelete: Cascade)
+  receiptTotalCents Int? // optional; feeds the price-learning experiment
+  receiptClosedAt   DateTime? // set when the receipt prompt is saved or skipped
+  items             ShoppingItem[]
+}
+
+model ShoppingItem {
+  id        String       @id @default(cuid())
+  listId    String
+  list      ShoppingList @relation(fields: [listId], references: [id], onDelete: Cascade)
+  aisle     String
+  name      String
+  qty       String
+  checked   Boolean      @default(false)
+  sortOrder Int
+}
+
+/// The North Star instrument: one row per logged night.
+model MealLog {
+  id            String      @id @default(cuid())
+  plannedMealId String      @unique
+  plannedMeal   PlannedMeal @relation(fields: [plannedMealId], references: [id], onDelete: Cascade)
+  profileId     String
+  profile       Profile     @relation(fields: [profileId], references: [id])
+  choice        LogChoice
+  loggedAt      DateTime    @default(now())
+}
+
+/// Agent-proposed mid-week diff. The agent only proposes; the user's tap commits.
+model ReplanProposal {
+  id        String        @id @default(cuid())
+  planId    String
+  plan      Plan          @relation(fields: [planId], references: [id], onDelete: Cascade)
+  status    ReplanStatus  @default(PENDING)
+  createdAt DateTime      @default(now())
+  entries   ReplanEntry[]
+}
+
+model ReplanEntry {
+  id          String         @id @default(cuid())
+  proposalId  String
+  proposal    ReplanProposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  dayIndex    Int
+  wasName     String
+  newRecipeId String
+  newRecipe   Recipe         @relation(fields: [newRecipeId], references: [id])
+  fitScore    Int
+  reason      String
+}
+
+model PantryItem {
+  id        String  @id @default(cuid())
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id])
+  name      String
+  qty       String?
+  updatedAt DateTime @updatedAt
+
+  @@unique([profileId, name])
+}
+
+/// Event bus between the app and the agent worker.
+model AgentJob {
+  id        String         @id @default(cuid())
+  type      AgentJobType
+  status    AgentJobStatus @default(QUEUED)
+  profileId String
+  payload   Json?
+  error     String?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model AgentRunLog {
+  id           String   @id @default(cuid())
+  jobId        String?
+  profileId    String
+  kind         String // 'weekly_plan' | 'replan'
+  model        String
+  inputTokens  Int
+  outputTokens Int
+  costUsd      Float
+  durationMs   Int
+  createdAt    DateTime @default(now())
+}

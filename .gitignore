@@ -1,0 +1,7 @@
+node_modules/
+.env
+.env.local
+.next/
+dist/
+packages/db/generated/
+agent/output/

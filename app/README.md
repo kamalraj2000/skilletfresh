@@ -1,25 +1,28 @@
-# SkilletFresh — core weekly loop
+# SkilletFresh app
 
-Implementation of the Claude Design prototype [`design/SkilletFresh Weekly Loop.dc.html`](../design/SkilletFresh%20Weekly%20Loop.dc.html)
-(project: [SkilletFresh weekly meal planner](https://claude.ai/design/p/5ae4183c-9f44-491b-8644-36f24257f770)).
-Covers the three screens in [docs/design-prompt-core-loop.md](../docs/design-prompt-core-loop.md), wired as one interactive flow:
+Next.js (App Router) client for the weekly loop: **Week** (Sunday review +
+swaps + lock), **List** (aisle-grouped shopping with receipt capture), and
+**Today** (one-tap Cooked/Swapped/Skipped log + re-plan diff banner).
 
-1. **Sunday Review** — default, swap bottom sheet (3 scored alternates), locked read-only state
-2. **Shopping List** — aisle-grouped check-off with progress, trip-complete + skippable receipt prompt
-3. **Today View** — week strip, hero recipe card, kitchen-readable recipe detail, one-tap
-   Cooked / Swapped / Skipped log, logged confirmation, and the re-plan diff after a skip or swap
+Run from the repo root — see the [root README](../README.md) for the full
+quickstart (Postgres, migrations, seed, agent worker).
 
-Data is seeded from the design file (`src/data.ts`) — in the real build it comes from the
-planner agent; those shapes are the handoff contract. Recipe photos are the design's warm
-gradient placeholders pending real photography.
-
-## Run
-
-```sh
-npm install --include=dev   # dev deps are skipped if NODE_ENV=production
-npm run dev
+```bash
+npm run dev      # from repo root, or: npm run dev -w app
+npm run build -w app
+npm run lint -w app   # oxlint
 ```
 
-Vite + React + TypeScript. Design tokens (palette, type, motion curves) live in `src/index.css`
-and match the Claude Design spec: Instrument Sans + Atkinson Hyperlegible, herb green primary,
-paprika reserved for logging and progress.
+Structure notes:
+
+- Pages are server components: `requireProfile()` → Prisma (scoped by
+  profileId) → view models (`src/lib/view.ts`) → client components.
+- Mutations are server actions in `src/lib/actions.ts`; shopping check-offs
+  are optimistic (`useOptimistic`).
+- Auth is next-auth v5 credentials + JWT; `src/auth.config.ts` is the
+  edge-safe half shared with the route-gating middleware.
+- The design system is a single `src/app/globals.css` (ported verbatim from
+  the prototype); fonts load via `next/font/google` into the `--font-ui` /
+  `--font-data` custom properties.
+- `/plan/[planId]/print` is the print layout the agent's PDF renderer hits
+  with `?token=PRINT_TOKEN`.
