@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SkilletFresh · ER Diagram</title>
+<style>
+  :root {
+    --paper: #F5F4EF;
+    --card: #FFFFFF;
+    --ink: #24231E;
+    --muted: #716C60;
+    --line: #DDD9CE;
+    --identity: #41648F;
+    --planning: #4C7A52;
+    --log: #2F7E7A;
+    --shopping: #A9762A;
+    --replan: #75589F;
+    --recipe: #B84A32;
+    --agent: #7D786C;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+
+  body > header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px 48px;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 40px 48px 8px;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 8px;
+  }
+  h1 {
+    font-size: 30px;
+    font-weight: 650;
+    letter-spacing: -0.015em;
+    margin: 0 0 6px;
+    text-wrap: balance;
+  }
+  .sub {
+    font-size: 13.5px;
+    color: var(--muted);
+    margin: 0;
+    max-width: 56ch;
+    line-height: 1.5;
+  }
+  .sub code { font-family: var(--mono); font-size: 12px; }
+
+  .legend {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 11.5px;
+    color: var(--muted);
+    padding-bottom: 4px;
+  }
+  .legend-row { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+  }
+  .chip .swatch {
+    width: 10px; height: 10px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+  .lgl { display: inline-flex; align-items: center; gap: 7px; }
+  .lgl svg { display: block; }
+
+  .board-wrap {
+    overflow-x: auto;
+    padding: 8px 0 12px;
+  }
+  .board {
+    position: relative;
+    min-width: 1300px;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 40px 48px 48px;
+  }
+  #wires {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .cols {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 96px;
+    align-items: flex-start;
+  }
+  .col { display: flex; flex-direction: column; gap: 48px; flex: 0 0 236px; }
+  .col.c2 { padding-top: 168px; }
+  .col.c3 { padding-top: 28px; }
+  .col.c4 { padding-top: 236px; }
+
+  .band {
+    position: relative;
+    z-index: 1;
+    margin-top: 88px;
+    border: 1.5px dashed #B9B3A4;
+    border-radius: 10px;
+    padding: 20px 24px 24px;
+    display: flex;
+    gap: 96px;
+    align-items: flex-start;
+    background: rgba(255,255,255,0.35);
+  }
+  .band-label {
+    position: absolute;
+    top: -9px;
+    left: 20px;
+    background: var(--paper);
+    padding: 0 8px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--agent);
+  }
+  .band .entity { flex: 0 0 236px; }
+
+  .entity {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--gc, var(--muted));
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(36,35,30,0.06);
+    width: 236px;
+    transition: box-shadow 0.15s ease, opacity 0.15s ease;
+  }
+  .entity header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 9px 12px 7px;
+    border-bottom: 1px solid var(--line);
+    margin: 0; max-width: none;
+  }
+  .entity h2 {
+    font-size: 13.5px;
+    font-weight: 650;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .entity .grp {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gc, var(--muted));
+  }
+  .entity table { border-collapse: collapse; width: 100%; }
+  .entity td {
+    padding: 3px 12px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    line-height: 1.5;
+    vertical-align: baseline;
+  }
+  .entity tr:first-child td { padding-top: 8px; }
+  .entity tr:last-child td { padding-bottom: 9px; }
+  td.f { white-space: nowrap; }
+  td.t {
+    text-align: right;
+    color: var(--muted);
+    font-size: 10.5px;
+    white-space: nowrap;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 0.5px 4px;
+    border-radius: 3px;
+    margin-left: 5px;
+    vertical-align: 1px;
+    border: 1px solid var(--gc);
+    color: var(--gc);
+  }
+  .badge.pk { background: var(--gc); color: #fff; }
+  .badge.fkc { background: color-mix(in srgb, var(--gc) 14%, #fff); }
+  .entity footer {
+    border-top: 1px dashed var(--line);
+    padding: 6px 12px 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .board.focused .entity:not(.hot) { opacity: 0.42; }
+  .entity.hot { box-shadow: 0 3px 10px rgba(36,35,30,0.14); }
+  .board.focused .edge:not(.hot) { opacity: 0.1; }
+  .edge { transition: opacity 0.15s ease; }
+  .edge.hot path.wire { stroke-width: 2.4; }
+
+  .notes {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 8px 48px 64px;
+  }
+  .notes h3 {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 28px 0 14px;
+  }
+  .note-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px 36px;
+  }
+  .note-grid h4 { font-size: 13px; margin: 0 0 5px; font-weight: 650; }
+  .note-grid p { font-size: 13px; line-height: 1.6; color: #4A463D; margin: 0; }
+  .note-grid code, .enums code { font-family: var(--mono); font-size: 11.5px; background: #ECEAE2; padding: 0.5px 4px; border-radius: 3px; }
+  .enums {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 8px 36px;
+    font-size: 12.5px;
+    color: #4A463D;
+  }
+  .enums div { line-height: 1.7; }
+  .enums b { font-family: var(--mono); font-size: 11.5px; font-weight: 600; color: var(--ink); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .entity, .edge { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <p class="eyebrow">SkilletFresh · Postgres / Prisma</p>
+    <h1>Database ER Diagram</h1>
+    <p class="sub">Thirteen entities from <code>prisma/schema.prisma</code>. Hover any entity to trace its relationships. Dashed wires are intentional string references with no foreign-key constraint.</p>
+  </div>
+  <div class="legend">
+    <div class="legend-row" id="group-chips"></div>
+    <div class="legend-row">
+      <span class="lgl"><svg width="34" height="10" viewBox="0 0 34 10"><path d="M2 5h30" stroke="#716C60" stroke-width="1.5"/><path d="M6 1.5v7" stroke="#716C60" stroke-width="1.5"/><path d="M22 5l10-3.5M22 5l10 0M22 5l10 3.5" stroke="#716C60" stroke-width="1.2" fill="none"/></svg>one · many</span>
+      <span class="lgl"><svg width="34" height="10" viewBox="0 0 34 10"><path d="M2 5h30" stroke="#716C60" stroke-width="1.5"/><circle cx="22" cy="5" r="3" fill="#F5F4EF" stroke="#716C60" stroke-width="1.2"/><path d="M28 1.5v7" stroke="#716C60" stroke-width="1.5"/></svg>one · zero-or-one</span>
+      <span class="lgl"><svg width="34" height="10" viewBox="0 0 34 10"><path d="M2 5h30" stroke="#716C60" stroke-width="1.5" stroke-dasharray="4 3"/></svg>no FK constraint</span>
+      <span class="lgl"><span class="badge pk" style="--gc:#716C60; margin:0;">PK</span>·<span class="badge" style="--gc:#716C60; margin:0;">FK</span>·<span class="badge fkc" style="--gc:#716C60; margin:0;">FK⌦</span> cascade delete ·<span class="badge" style="--gc:#716C60; margin:0;">UK</span> unique</span>
+    </div>
+  </div>
+</header>
+
+<div class="board-wrap">
+  <div class="board" id="board">
+    <svg id="wires"></svg>
+    <div class="cols" id="cols"></div>
+    <div class="band" id="band">
+      <span class="band-label">Agent layer — event bus &amp; telemetry, no FK constraints</span>
+    </div>
+  </div>
+</div>
+
+<section class="notes">
+  <h3>Structural notes</h3>
+  <div class="note-grid">
+    <div>
+      <h4>The core chain</h4>
+      <p><code>User → Profile → Plan → PlannedMeal → MealLog</code>. A profile gets one plan per week (<code>unique(profileId, weekStart)</code>), one meal per day (<code>unique(planId, dayIndex)</code>), and at most one log per planned meal — that log is the North Star instrument.</p>
+    </div>
+    <div>
+      <h4>Recipe is the shared corpus</h4>
+      <p>Referenced from planned meals, the swap pool (<code>PlanAlternate</code>), and replan entries. It doubles as the cached recipe corpus the agent draws from — <code>parsedVia</code> records whether a row came from seed data, JSON-LD scraping, or LLM extraction.</p>
+    </div>
+    <div>
+      <h4>Cascade boundaries</h4>
+      <p>Deleting a <code>Plan</code> cascades through <code>PlannedMeal</code>, <code>PlanAlternate</code>, <code>ShoppingList</code> (→ <code>ShoppingItem</code>), and <code>ReplanProposal</code> (→ <code>ReplanEntry</code>). <code>MealLog</code> cascades from <code>PlannedMeal</code>. <code>Recipe</code>, <code>Profile</code>, and <code>User</code> never cascade.</p>
+    </div>
+    <div>
+      <h4>Dashed wires are intentional decoupling</h4>
+      <p><code>AgentJob</code> and <code>AgentRunLog</code> store <code>profileId</code> (and <code>jobId</code>) as plain strings with no foreign-key relations — the event bus and telemetry layer sit deliberately outside the relational graph.</p>
+    </div>
+  </div>
+  <h3>Enums</h3>
+  <div class="enums">
+    <div><b>PlanStatus</b> — DRAFT · LOCKED<br><b>LogChoice</b> — COOKED · SWAPPED · SKIPPED</div>
+    <div><b>ReplanStatus</b> — PENDING · ACCEPTED · DISMISSED<br><b>ParsedVia</b> — SEED · JSONLD · LLM</div>
+    <div><b>AgentJobType</b> — WEEKLY_PLAN · REPLAN<br><b>AgentJobStatus</b> — QUEUED · RUNNING · DONE · FAILED</div>
+  </div>
+</section>
+
+<script>
+  const GROUPS = {
+    identity: { label: 'Identity', color: '#41648F' },
+    planning: { label: 'Planning', color: '#4C7A52' },
+    log:      { label: 'Logging',  color: '#2F7E7A' },
+    shopping: { label: 'Shopping', color: '#A9762A' },
+    replan:   { label: 'Replan',   color: '#75589F' },
+    recipe:   { label: 'Recipe corpus', color: '#B84A32' },
+    agent:    { label: 'Agent layer',   color: '#7D786C' },
+  };
+
+  // keys: pk | fk | fkc (fk + cascade delete) | uk
+  const ENTITIES = {
+    User: { group: 'identity', fields: [
+      ['id', 'String', ['pk']], ['email', 'String', ['uk']],
+      ['name', 'String'], ['passwordHash', 'String'],
+    ]},
+    Profile: { group: 'identity', fields: [
+      ['id', 'String', ['pk']], ['userId', 'String', ['fk', 'uk']],
+      ['displayName', 'String'], ['proteinTargetG', 'Int'],
+      ['timeCeilingMin', 'Int'], ['skillLevel', 'Int'],
+      ['varietyPreference', 'Int'], ['planShape', 'String'],
+      ['dietTags', 'String[]'], ['budgetCents', 'Int'],
+    ]},
+    PantryItem: { group: 'identity', fields: [
+      ['id', 'String', ['pk']], ['profileId', 'String', ['fk']],
+      ['name', 'String'], ['qty', 'String?'], ['updatedAt', 'DateTime'],
+    ], footer: 'unique(profileId, name)' },
+    Plan: { group: 'planning', fields: [
+      ['id', 'String', ['pk']], ['profileId', 'String', ['fk']],
+      ['weekStart', 'DateTime'], ['status', 'PlanStatus'],
+      ['estGroceriesCents', 'Int'],
+    ], footer: 'unique(profileId, weekStart)' },
+    MealLog: { group: 'log', fields: [
+      ['id', 'String', ['pk']], ['plannedMealId', 'String', ['fkc', 'uk']],
+      ['profileId', 'String', ['fk']], ['choice', 'LogChoice'],
+      ['loggedAt', 'DateTime'],
+    ], footer: 'North Star: one row per logged night' },
+    PlannedMeal: { group: 'planning', fields: [
+      ['id', 'String', ['pk']], ['planId', 'String', ['fkc']],
+      ['dayIndex', 'Int'], ['recipeId', 'String', ['fk']],
+      ['fitScore', 'Int'], ['reason', 'String'],
+    ], footer: 'unique(planId, dayIndex) · day 0 = Monday' },
+    ShoppingList: { group: 'shopping', fields: [
+      ['id', 'String', ['pk']], ['planId', 'String', ['fkc', 'uk']],
+      ['receiptTotalCents', 'Int?'], ['receiptClosedAt', 'DateTime?'],
+    ]},
+    ReplanProposal: { group: 'replan', fields: [
+      ['id', 'String', ['pk']], ['planId', 'String', ['fkc']],
+      ['status', 'ReplanStatus'], ['createdAt', 'DateTime'],
+    ], footer: 'agent proposes; the user’s tap commits' },
+    PlanAlternate: { group: 'planning', fields: [
+      ['id', 'String', ['pk']], ['planId', 'String', ['fkc']],
+      ['recipeId', 'String', ['fk']], ['fitScore', 'Int'], ['reason', 'String'],
+    ], footer: 'scored swap pool for the swap sheet' },
+    ShoppingItem: { group: 'shopping', fields: [
+      ['id', 'String', ['pk']], ['listId', 'String', ['fkc']],
+      ['aisle', 'String'], ['name', 'String'], ['qty', 'String'],
+      ['checked', 'Boolean'], ['sortOrder', 'Int'],
+    ]},
+    ReplanEntry: { group: 'replan', fields: [
+      ['id', 'String', ['pk']], ['proposalId', 'String', ['fkc']],
+      ['dayIndex', 'Int'], ['wasName', 'String'],
+      ['newRecipeId', 'String', ['fk']], ['fitScore', 'Int'], ['reason', 'String'],
+    ]},
+    Recipe: { group: 'recipe', fields: [
+      ['id', 'String', ['pk']], ['name', 'String'],
+      ['timeMin', 'Int'], ['calories', 'Int'], ['proteinG', 'Int?'],
+      ['portionLabel', 'String?'], ['photoColor1', 'String?'],
+      ['photoColor2', 'String?'], ['ingredients', 'Json'],
+      ['steps', 'String[]'], ['sourceUrl', 'String?', ['uk']],
+      ['publishedNutrition', 'Json?'], ['parsedVia', 'ParsedVia'],
+      ['lastFetched', 'DateTime?'],
+    ], footer: 'doubles as the agent’s cached corpus' },
+    AgentJob: { group: 'agent', fields: [
+      ['id', 'String', ['pk']], ['type', 'AgentJobType'],
+      ['status', 'AgentJobStatus'], ['profileId', 'String'],
+      ['payload', 'Json?'], ['error', 'String?'],
+      ['createdAt', 'DateTime'], ['updatedAt', 'DateTime'],
+    ]},
+    AgentRunLog: { group: 'agent', fields: [
+      ['id', 'String', ['pk']], ['jobId', 'String?'],
+      ['profileId', 'String'], ['kind', 'String'], ['model', 'String'],
+      ['inputTokens', 'Int'], ['outputTokens', 'Int'],
+      ['costUsd', 'Float'], ['durationMs', 'Int'], ['createdAt', 'DateTime'],
+    ]},
+  };
+
+  const COLUMNS = [
+    ['User', 'Profile', 'PantryItem'],
+    ['Plan', 'MealLog'],
+    ['PlannedMeal', 'ShoppingList', 'ReplanProposal', 'PlanAlternate'],
+    ['ShoppingItem', 'ReplanEntry', 'Recipe'],
+  ];
+  const BAND = ['AgentJob', 'AgentRunLog'];
+
+  // { f, t, fs, ts, card: 'many' | 'zeroOne', dash }
+  const EDGES = [
+    { f: 'User', t: 'Profile', fs: 'bottom', ts: 'top', card: 'zeroOne' },
+    { f: 'Profile', t: 'Plan', fs: 'right', ts: 'left', card: 'many' },
+    { f: 'Profile', t: 'MealLog', fs: 'right', ts: 'left', card: 'many' },
+    { f: 'Profile', t: 'PantryItem', fs: 'bottom', ts: 'top', card: 'many' },
+    { f: 'Plan', t: 'PlannedMeal', fs: 'right', ts: 'left', card: 'many' },
+    { f: 'Plan', t: 'ShoppingList', fs: 'right', ts: 'left', card: 'zeroOne' },
+    { f: 'Plan', t: 'ReplanProposal', fs: 'right', ts: 'left', card: 'many' },
+    { f: 'Plan', t: 'PlanAlternate', fs: 'right', ts: 'left', card: 'many' },
+    { f: 'PlannedMeal', t: 'MealLog', fs: 'left', ts: 'right', card: 'zeroOne' },
+    { f: 'ShoppingList', t: 'ShoppingItem', fs: 'right', ts: 'left', card: 'many' },
+    { f: 'ReplanProposal', t: 'ReplanEntry', fs: 'right', ts: 'left', card: 'many' },
+    { f: 'Recipe', t: 'PlannedMeal', fs: 'left', ts: 'right', card: 'many' },
+    { f: 'Recipe', t: 'PlanAlternate', fs: 'left', ts: 'right', card: 'many' },
+    { f: 'Recipe', t: 'ReplanEntry', fs: 'top', ts: 'bottom', card: 'many' },
+    { f: 'Profile', t: 'AgentJob', fs: 'left', ts: 'left', card: 'many', dash: true },
+    { f: 'Profile', t: 'AgentRunLog', fs: 'left', ts: 'bottom', card: 'many', dash: true },
+    { f: 'AgentJob', t: 'AgentRunLog', fs: 'right', ts: 'left', card: 'many', dash: true },
+  ];
+
+  const BADGE_LABEL = { pk: 'PK', fk: 'FK', fkc: 'FK⌦', uk: 'UK' };
+
+  function entityCard(name) {
+    const e = ENTITIES[name];
+    const g = GROUPS[e.group];
+    const el = document.createElement('article');
+    el.className = 'entity';
+    el.dataset.name = name;
+    el.style.setProperty('--gc', g.color);
+    const rows = e.fields.map(([f, t, keys]) => {
+      const badges = (keys || []).map(k =>
+        `<span class="badge ${k}">${BADGE_LABEL[k]}</span>`).join('');
+      return `<tr><td class="f">${f}${badges}</td><td class="t">${t.replace('[]', '[ ]')}</td></tr>`;
+    }).join('');
+    el.innerHTML = `
+      <header><h2>${name}</h2><span class="grp">${g.label}</span></header>
+      <table>${rows}</table>
+      ${e.footer ? `<footer>${e.footer}</footer>` : ''}`;
+    return el;
+  }
+
+  const colsEl = document.getElementById('cols');
+  COLUMNS.forEach((names, i) => {
+    const col = document.createElement('div');
+    col.className = `col c${i + 1}`;
+    names.forEach(n => col.appendChild(entityCard(n)));
+    colsEl.appendChild(col);
+  });
+  const bandEl = document.getElementById('band');
+  BAND.forEach(n => bandEl.appendChild(entityCard(n)));
+
+  document.getElementById('group-chips').innerHTML = Object.values(GROUPS)
+    .map(g => `<span class="chip"><span class="swatch" style="background:${g.color}"></span>${g.label}</span>`)
+    .join('');
+
+  const board = document.getElementById('board');
+  const svg = document.getElementById('wires');
+  const NS = 'http://www.w3.org/2000/svg';
+  const NORMALS = { left: [-1, 0], right: [1, 0], top: [0, -1], bottom: [0, 1] };
+
+  function anchor(name, side, slot, slots) {
+    const r = document.querySelector(`[data-name="${name}"]`).getBoundingClientRect();
+    const b = board.getBoundingClientRect();
+    const frac = (slot + 1) / (slots + 1);
+    const x = side === 'left' ? r.left : side === 'right' ? r.right : r.left + r.width * frac;
+    const y = side === 'top' ? r.top : side === 'bottom' ? r.bottom : r.top + r.height * frac;
+    return [x - b.left, y - b.top];
+  }
+
+  function seg(x1, y1, x2, y2, color, w) {
+    const l = document.createElementNS(NS, 'line');
+    l.setAttribute('x1', x1); l.setAttribute('y1', y1);
+    l.setAttribute('x2', x2); l.setAttribute('y2', y2);
+    l.setAttribute('stroke', color); l.setAttribute('stroke-width', w || 1.4);
+    return l;
+  }
+
+  // Cardinality glyphs sit just outside the card border, along the normal n.
+  function glyph(group, [x, y], [nx, ny], kind, color) {
+    const px = -ny, py = nx; // perpendicular
+    if (kind === 'one') {
+      const bx = x + nx * 9, by = y + ny * 9;
+      group.appendChild(seg(bx + px * 5, by + py * 5, bx - px * 5, by - py * 5, color));
+    } else if (kind === 'many') {
+      const qx = x + nx * 12, qy = y + ny * 12;
+      group.appendChild(seg(qx, qy, x + px * 6, y + py * 6, color));
+      group.appendChild(seg(qx, qy, x, y, color));
+      group.appendChild(seg(qx, qy, x - px * 6, y - py * 6, color));
+    } else { // zeroOne: bar then circle
+      const bx = x + nx * 8, by = y + ny * 8;
+      group.appendChild(seg(bx + px * 5, by + py * 5, bx - px * 5, by - py * 5, color));
+      const c = document.createElementNS(NS, 'circle');
+      c.setAttribute('cx', x + nx * 16); c.setAttribute('cy', y + ny * 16);
+      c.setAttribute('r', 3.5);
+      c.setAttribute('fill', '#F5F4EF'); c.setAttribute('stroke', color);
+      c.setAttribute('stroke-width', 1.4);
+      group.appendChild(c);
+    }
+  }
+
+  function draw() {
+    svg.replaceChildren();
+    // spread multiple edges sharing an entity side across that side
+    const slots = {}, seen = {};
+    EDGES.forEach(e => {
+      slots[`${e.f}|${e.fs}`] = (slots[`${e.f}|${e.fs}`] || 0) + 1;
+      slots[`${e.t}|${e.ts}`] = (slots[`${e.t}|${e.ts}`] || 0) + 1;
+    });
+    EDGES.forEach(e => {
+      const fk = `${e.f}|${e.fs}`, tk = `${e.t}|${e.ts}`;
+      const fi = seen[fk] = (seen[fk] ?? -1) + 1;
+      const ti = seen[tk] = (seen[tk] ?? -1) + 1;
+      const p1 = anchor(e.f, e.fs, fi, slots[fk]);
+      const p2 = anchor(e.t, e.ts, ti, slots[tk]);
+      const n1 = NORMALS[e.fs], n2 = NORMALS[e.ts];
+      const color = GROUPS[ENTITIES[e.f].group].color;
+      const dist = Math.hypot(p2[0] - p1[0], p2[1] - p1[1]);
+      const k = e.fs === e.ts
+        ? Math.max(70, dist * 0.28)
+        : Math.min(170, Math.max(42, dist * 0.42));
+      const g = document.createElementNS(NS, 'g');
+      g.setAttribute('class', 'edge');
+      g.dataset.f = e.f; g.dataset.t = e.t;
+      const path = document.createElementNS(NS, 'path');
+      path.setAttribute('class', 'wire');
+      path.setAttribute('d',
+        `M ${p1[0]} ${p1[1]} C ${p1[0] + n1[0] * k} ${p1[1] + n1[1] * k}, ` +
+        `${p2[0] + n2[0] * k} ${p2[1] + n2[1] * k}, ${p2[0]} ${p2[1]}`);
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke', color);
+      path.setAttribute('stroke-width', 1.6);
+      path.setAttribute('stroke-opacity', 0.72);
+      if (e.dash) path.setAttribute('stroke-dasharray', '6 5');
+      g.appendChild(path);
+      glyph(g, p1, n1, 'one', color);
+      glyph(g, p2, n2, e.card, color);
+      svg.appendChild(g);
+    });
+  }
+
+  document.querySelectorAll('.entity').forEach(card => {
+    const name = card.dataset.name;
+    card.addEventListener('mouseenter', () => {
+      board.classList.add('focused');
+      document.querySelectorAll('.edge').forEach(g => {
+        const on = g.dataset.f === name || g.dataset.t === name;
+        g.classList.toggle('hot', on);
+        if (on) {
+          document.querySelector(`[data-name="${g.dataset.f}"]`).classList.add('hot');
+          document.querySelector(`[data-name="${g.dataset.t}"]`).classList.add('hot');
+        }
+      });
+      card.classList.add('hot');
+    });
+    card.addEventListener('mouseleave', () => {
+      board.classList.remove('focused');
+      document.querySelectorAll('.hot').forEach(el => el.classList.remove('hot'));
+    });
+  });
+
+  draw();
+  new ResizeObserver(draw).observe(board);
+</script>
+</body>
+</html>
