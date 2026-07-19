@@ -71,9 +71,13 @@ model Profile {
 model Recipe {
   id                 String      @id @default(cuid())
   name               String
+  description        String?
+  category           String?
   timeMin            Int
+  prepTimeMin        Int?
   calories           Int
   proteinG           Int?
+  servings           Int?
   portionLabel       String?
   photoColor1        String? // designed gradient placeholder; app derives from name hash when absent
   photoColor2        String?
@@ -83,6 +87,8 @@ model Recipe {
   publishedNutrition Json?
   parsedVia          ParsedVia   @default(SEED)
   lastFetched        DateTime?
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
   plannedMeals       PlannedMeal[]
   alternates         PlanAlternate[]
   replanEntries      ReplanEntry[]

@@ -5,3 +5,4 @@ node_modules/
 dist/
 packages/db/generated/
 agent/output/
+.playwright-mcp/
