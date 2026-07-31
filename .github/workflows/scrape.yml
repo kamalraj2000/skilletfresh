@@ -1,0 +1,61 @@
+# Recipe scout — the agent, autonomous, in production.
+#
+# On a schedule (and on demand), a GitHub runner starts a headless Claude
+# agent that scouts the web for recipes and saves new ones into the LIVE app
+# through its MCP server (.mcp.prod.json). The runner never touches the
+# database — it can't; Postgres is VNET-private. The app's MCP route is the
+# only door, and MCP_API_KEY is the key to it.
+#
+# Secrets (repo → Settings → Secrets and variables → Actions):
+#   ANTHROPIC_API_KEY — pays for the agent's tokens
+#   MCP_API_KEY       — must match the container app's MCP_API_KEY env var
+name: recipe-scout
+
+on:
+  schedule:
+    - cron: "0 11 * * *" # daily, 11:00 UTC ≈ 7 AM ET
+  workflow_dispatch:
+    inputs:
+      focus:
+        description: "What to scout for (e.g. 'high-protein vegetarian dinners')"
+        required: false
+        default: ""
+      count:
+        description: "How many new recipes to add"
+        required: false
+        default: "3"
+
+concurrency:
+  group: recipe-scout
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  scout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Run the recipe scout
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MCP_API_KEY: ${{ secrets.MCP_API_KEY }}
+          FOCUS: ${{ inputs.focus }}
+          COUNT: ${{ inputs.count || '3' }}
+        run: |
+          claude -p "Use the recipe-scout skill. Focus: ${FOCUS:-scout for gaps in the corpus}. Add up to ${COUNT} new recipes." \
+            --mcp-config .mcp.prod.json \
+            --strict-mcp-config \
+            --allowedTools "Skill,WebSearch,WebFetch,mcp__recipes__recipes_list,mcp__recipes__recipes_search,mcp__recipes__recipes_add" \
+            --max-turns 60 \
+            --output-format json \
+            | tee run.json | jq -r '.result'
+
+      - name: Cost of this run
+        run: jq -r '"cost: $\(.total_cost_usd) | turns: \(.num_turns) | duration: \(.duration_ms / 1000 | round)s"' run.json
