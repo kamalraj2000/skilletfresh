@@ -58,4 +58,5 @@ jobs:
             | tee run.json | jq -r '.result'
 
       - name: Cost of this run
-        run: jq -r '"cost: $\(.total_cost_usd) | turns: \(.num_turns) | duration: \(.duration_ms / 1000 | round)s"' run.json
+        run: |
+          jq -r '"cost: $\(.total_cost_usd) | turns: \(.num_turns) | duration: \(.duration_ms / 1000 | round)s"' run.json
