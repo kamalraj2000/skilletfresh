@@ -228,4 +228,23 @@ category must be one of: ${CATEGORY_LIST}`,
   }
 );
 
-export { handler as GET, handler as POST };
+// The MCP route is excluded from NextAuth in middleware.ts — it must be
+// callable by headless agents, not browsers with session cookies. That means
+// this bearer check is the ONLY thing between the internet and recipes_delete.
+// MCP_API_KEY unset (local dev) leaves the route open.
+function withBearerAuth(h: (req: Request) => Promise<Response>) {
+  return async (req: Request): Promise<Response> => {
+    const expected = process.env.MCP_API_KEY;
+    if (expected && req.headers.get("authorization") !== `Bearer ${expected}`) {
+      return Response.json(
+        { error: "unauthorized" },
+        { status: 401, headers: { "WWW-Authenticate": "Bearer" } },
+      );
+    }
+    return h(req);
+  };
+}
+
+const authedHandler = withBearerAuth(handler);
+
+export { authedHandler as GET, authedHandler as POST };

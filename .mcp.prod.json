@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "recipes": {
+      "type": "http",
+      "url": "https://skilletfresh.apps.human-angle.com/api/mcp",
+      "headers": {
+        "Authorization": "Bearer ${MCP_API_KEY}"
+      }
+    }
+  }
+}
